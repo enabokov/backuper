@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package master;
+
+service Master {
+    rpc Heartbeat(MinionInfo) returns (Response) {}
+    rpc GetAllMinions(Query) returns (ListMinions) {}
+}
+
+message MinionInfo {
+    string host = 1;
+}
+
+message Response {
+    string msg = 1;
+}
+
+message Query {
+    string query = 1;
+}
+
+message ListMinions{
+    repeated string host = 1;
+}

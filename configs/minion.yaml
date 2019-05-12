@@ -1,0 +1,13 @@
+port: 15000
+heartbeat: 10 # in seconds
+master:
+  host: 127.0.0.1
+  port: 8080
+namenode:
+  host: 127.0.0.1
+  port: 8022
+targets:
+  s3:
+    bucket:
+      name: tmp-enabokov-test
+      region: us-east-1

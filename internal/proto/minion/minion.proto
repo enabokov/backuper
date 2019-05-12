@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package minion;
+
+service Minion {
+    rpc GetNamespaces(Query) returns (Namespaces) {}
+    rpc GetTables(Query) returns (Tables) {}
+
+    rpc StartBackup(Query) returns (Response) {}
+    rpc StopBackup(Query) returns (Response) {}
+}
+
+message Query {
+    string query = 1;
+}
+
+message Namespaces {
+    repeated string names = 1;
+    repeated string sizes = 2;
+}
+
+message Tables {
+    repeated string tables = 1;
+}
+
+message Response {
+    string msg = 1;
+}
