@@ -1,0 +1,113 @@
+% зазначаємо стильовий файл, який будемо використовувати
+\documentclass{bachelor}
+
+\usepackage{verbatim}
+
+\newcommand{\bigG}{\mathbb{G}}
+\newcommand{\inR}{\in_R}
+\newcommand{\Mod}[1]{\ (\text{mod}\ #1)}
+
+\renewcommand{\floatpagefraction}{.8}
+\DeclareMathOperator{\ind}{ind}
+
+% починаємо верстку документа
+\begin{document}
+    \maketitlepage{
+        StudentName={Набоков Едуард Максимович}, 
+        StudentMale=true,
+        StudentGroup={ІП-52},
+        ThesisTitle={Автоматизована централізована система бекапу баз данних},
+        Advisor={доцент, канд. техн. наук, доцент Гавриленко~О.~В.},
+        Reviewer={проф., д-р техн. наук, проф. Сидоренко~С.~С.},
+        Year={2016}
+    }
+
+    \assignment{
+        StudentName={Набоков Едуард Максимович},
+        StudentMale=true,
+        ThesisTitle={Автоматизована централізована система бекапу баз данних},
+        Advisor={Гавриленко О.В., канд. техн. наук, доцент},
+        Order={\invcommas{28}~травня~2018~р.~\No~000-C},
+        ApplicationDate={\invcommas{15}~червня~2018~р.},
+        InputData={реалізована система повинна створювати повні копії будь-яких баз данних через единий інтерфейс та зберігати у хмарних платформах за заданим користувачем інтервалом},
+        Contents={проаналізувати методи створення бекапу баз данних, обрати швидкий та відмовостійкий метод створення резервних копій, спроектувати та реалізувати мікросервісну архітектуру, забезпечити універсальний підхід, надійність та цілістність трансферу данних для кожної з баз данних},
+        Graphics={схема мікросервісної архітектури},
+        ConsultantChapter={Розділ 3. Математичне забезпечення},
+        Consultant={Бондаренко~Б.~Б., старший~викладач},
+        AssignmentDate={\invcommas{15}~квітня~2018~р.},
+        Calendar={
+        1 & Перегляд та збір джерел за данною темою & 12.11.2018 & \\
+        \hline
+        2 & Аналіз та оцінювання методів створення резервених копій для кожної з баз данних & 14.12.2018 & \\
+        \hline
+        3 & Аналіз та оцінка REST та RPC підходів для реалізування мікросервісної архітектури & 24.12.2018 & \\
+        \hline
+        4 & Підготовка матеріалів першого розділу роботи & 01.02.2019 & \\
+        \hline
+        5 & Реалізація архітектури, створення бекапу hbase, зберігання у AWS S3 & 01.03.2019 & \\
+        \hline
+        6 & Підготовка матеріалів другого розділу роботи & 15.03.2019 & \\
+        \hline
+        7 & Підготовка матеріалів третього розділу роботи & 05.04.2019 & \\
+        \hline
+        8 & Підготовка матеріалів четвертого розділу роботи & 03.05.2019 & \\
+        \hline
+        9 & Оформлення пояснювальної записки & 01.06.2019 & \\
+        },
+        StudentNameShort={Набоков~Е.~М.},
+        AdvisorNameShort={Гавриленко~О.~В.},
+        Year={2019}
+    }
+
+    \input{chapters/1_abstract}
+
+    % створюємо зміст
+    % \includepdf[pages={-}]{abstract.pdf}
+    \pagenumbering{gobble}
+    \tableofcontents
+    \cleardoublepage
+    \pagenumbering{arabic}
+    \setcounter{page}{8}
+
+    % створюємо перелік умовних позначень, скорочень і термінів
+    \input{chapters/2_shortings}
+    \input{chapters/3_intro}
+    \input{chapters/4_overview}
+    \input{chapters/5_tooling}
+    \input{chapters/6_algorithms}
+    \input{chapters/7_implementation}
+    \input{chapters/8_conclusions}
+
+    \bibliographystyle{ugost2003}
+    \bibliography{thesis}
+    % % створюємо додатки
+    % % перший додаток повинен містити лістинги розроблених програм
+    % \append{Лістинги програм}
+
+    % % кожний лістинг вставляється в додаток за допомогою спеціальної команди,
+    % % перший аргумент якої --- це заголовок, який з'являтиметься в тексті,
+    % % другий --- шлях до файлу з лістингом
+    % \listing{presenter.h --- прототип пред'явника-вчителя}{SRC/Presenter/presenter.h}
+
+    % \listing{presenter.cpp --- реалізація пред'явника-вчителя}{SRC/Presenter/presenter.cpp}
+
+    % \input{chapters/appendix_firstrun}
+
+    % % останній додаток повинен містити слайди пр\езентації доповіді на захисті дипломної роботи
+    % \append{Ілюстративний матеріал}
+
+    % \begin{figure}[!htp]%
+    % 	\centering
+    % 	\includegraphics[scale = 0.43]{PNG/slide1.png}%
+    % 	\caption{Слайд 1}%
+    % 	\label{fig:p1}%
+    % \end{figure}
+
+    % \begin{figure}[!htp]%
+    % 	\centering
+    % 	\includegraphics[scale = 0.455]{PNG/slide2.png}%
+    % 	\caption{Слайд 2}%
+    % 	\label{fig:p2}%
+    % \end{figure}
+
+\end{document}
