@@ -10,7 +10,7 @@ import (
 )
 
 type Socket struct {
-	IP string
+	IP   string
 	Port string
 }
 
@@ -32,7 +32,7 @@ func createSnapshot(namespace string, tablename string) string {
 	}
 
 	var (
-		t = time.Now()
+		t            = time.Now()
 		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s-%s", namespace, tablename, uniqueKey, t.Format("2006-01-02-15-04-05"))
 	)
 
@@ -104,7 +104,7 @@ func ListSnapshots() []string {
 }
 
 func writeAndGetTmpFile(cmds []string) (filename string) {
-	const tmpFilename = "_tmp_"+uniqueKey+".sh"
+	const tmpFilename = "_tmp_" + uniqueKey + ".sh"
 
 	err := os.Remove(tmpFilename)
 	if err != nil {
@@ -132,7 +132,7 @@ func writeAndGetTmpFile(cmds []string) (filename string) {
 	return tmpFilename
 }
 
-func createTableFromSnapshot(snapshotname string)  (string, error) {
+func createTableFromSnapshot(snapshotname string) (string, error) {
 	var cmds []string
 
 	cmds = append(cmds, fmt.Sprintf("clone_snapshot '%s', '%s_table'", snapshotname, snapshotname))
@@ -150,7 +150,7 @@ func createTableFromSnapshot(snapshotname string)  (string, error) {
 	}
 
 	log.Info.Println(string(out))
-	return snapshotname+"_table", nil
+	return snapshotname + "_table", nil
 }
 
 func CreateTableFromSnapshot(snapshotname string) (string, error) {

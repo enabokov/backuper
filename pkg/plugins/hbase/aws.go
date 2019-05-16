@@ -30,7 +30,7 @@ func getAWSClient(conf S3Options) *session.Session {
 func calcRemoteChecksum(sess *session.Session, bucket string, key string) string {
 	objGet := &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
-		Key: aws.String(key),
+		Key:    aws.String(key),
 	}
 
 	s3obj, err := s3.New(sess).GetObject(objGet)
@@ -63,9 +63,9 @@ func uploadFileToS3Bucket(sess *session.Session, c *hdfs.Client, filename string
 	log.Info.Printf("Start backup %s -> s3://%s", filename, key)
 
 	objPutInput := &s3.PutObjectInput{
-		Bucket:               aws.String(conf.BucketName),
-		Key:                  aws.String(key),
-		Body:                 file,
+		Bucket: aws.String(conf.BucketName),
+		Key:    aws.String(key),
+		Body:   file,
 	}
 
 	// if failed, use multi part upload
@@ -73,9 +73,9 @@ func uploadFileToS3Bucket(sess *session.Session, c *hdfs.Client, filename string
 		log.Error.Println(err, filename)
 
 		objUploadInput := &s3manager.UploadInput{
-			Bucket:               aws.String(conf.BucketName),
-			Key:                  aws.String(key),
-			Body:                 file,
+			Bucket: aws.String(conf.BucketName),
+			Key:    aws.String(key),
+			Body:   file,
 		}
 
 		if _, err = s3manager.NewUploader(sess).Upload(objUploadInput); err != nil {

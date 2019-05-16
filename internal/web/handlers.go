@@ -80,12 +80,11 @@ func backupStart(w http.ResponseWriter, r *http.Request) {
 
 	conn := connPool.GRPCConnect(r.Context(), params["host"], port, grpc.WithInsecure())
 	client := minion.NewMinionClient(conn)
-	msg, err := client.StartBackup(context.Background(), &minion.Query{Query: params["path"]})
+	msg, err := client.StartBackup(context.Background(), &minion.Query{Db: params["db"], Query: params["path"]})
 	if err != nil {
 		log.Error.Println(err)
 		return
 	}
-
 	connPool.GRPCDisconnect(conn)
 
 	cacheAlerts = append(cacheAlerts, msg.Msg)
@@ -121,7 +120,7 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 
 	conn := connPool.GRPCConnect(r.Context(), params[`host`], port, grpc.WithInsecure())
 	client := minion.NewMinionClient(conn)
-	namespaces, err := client.GetNamespaces(context.Background(), &minion.Query{Query: `/hbase/data`})
+	namespaces, err := client.GetNamespaces(context.Background(), &minion.Query{Db: params[`db`], Query: params[`path`]})
 	if err != nil {
 		log.Error.Println(err)
 		return
@@ -131,14 +130,16 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 	// TODO : tmp cache -> change to real cache
 	cacheNamespaces = nil
 	for i, ns := range namespaces.Names {
-		_tmp := make(map[string]string)
-		_tmp[`name`] = ns
-		_tmp[`size`] = namespaces.Sizes[i]
-
-		cacheNamespaces = append(cacheNamespaces, _tmp)
+		cacheNamespaces = append(
+			cacheNamespaces,
+			map[string]string{
+				`name`: ns,
+				`size`: namespaces.Sizes[i],
+				`ok`:   strconv.FormatFloat(namespaces.Ok[i], 'f', 1, 64),
+			},
+		)
 	}
 
-	log.Info.Println(params["host"])
 	ctx := HTMLContext{
 		"Db":         params["db"],
 		"Host":       params["host"],
@@ -148,7 +149,6 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO: tmp cache -> change to real cache
-	// clear messages
 	cacheAlerts = nil
 	render(w, ctx, "progress.html")
 }
