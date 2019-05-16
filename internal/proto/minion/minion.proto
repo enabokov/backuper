@@ -11,12 +11,14 @@ service Minion {
 }
 
 message Query {
-    string query = 1;
+    string db = 1;
+    string query = 2;
 }
 
 message Namespaces {
     repeated string names = 1;
     repeated string sizes = 2;
+    repeated double ok = 3;
 }
 
 message Tables {
