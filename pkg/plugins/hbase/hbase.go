@@ -1,136 +1,158 @@
 package hbase
 
 import (
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/colinmarc/hdfs"
-	"path/filepath"
-	"strconv"
-	"sync"
-
+	"fmt"
 	"github.com/enabokov/backuper/internal/log"
+	"os"
+	"os/exec"
+	"regexp"
+	"time"
 )
 
-type SourceFile struct {
-	HostNameNode string
-	Filename     string
+type Socket struct {
+	IP string
+	Port string
 }
 
-type TargetS3 struct {
+func (s *Socket) GetHost() string {
+	return fmt.Sprintf("%s:%s", s.IP, s.Port)
+}
+
+type S3Options struct {
 	Region     string
 	BucketName string
 	Key        string
 }
 
-func checkIsDir(client *hdfs.Client, filename string) bool {
-	stat, err := client.Stat(filename)
+const uniqueKey = "managed-by-backuper"
+
+func createSnapshot(namespace string, tablename string) string {
+	if namespace == "" {
+		namespace = "non"
+	}
+
+	var (
+		t = time.Now()
+		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s-%s", namespace, tablename, uniqueKey, t.Format("2006-01-02-15-04-05"))
+	)
+
+	log.Info.Println("Creating snapshot", snapshotName)
+	out, err := exec.Command(
+		"hbase",
+		"org.apache.hadoop.hbase.snapshot.CreateSnapshot",
+		fmt.Sprintf("--table %s", tablename),
+		fmt.Sprintf("--name %s", snapshotName)).Output()
+	if err != nil {
+		log.Error.Println(err)
+		return ""
+	}
+
+	log.Info.Println(string(out))
+	return snapshotName
+}
+
+func CreateSnapshot(namespace string, tablename string) string {
+	return createSnapshot(namespace, tablename)
+}
+
+// TODO: correct it
+func deleteSnapshot(namespace, tablename, timestamp string) string {
+	if namespace == "" {
+		namespace = "non"
+	}
+
+	var (
+		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s-%s", namespace, tablename, uniqueKey, timestamp)
+	)
+
+	log.Info.Println("Deleting snapshot", snapshotName)
+	out, err := exec.Command(
+		"hbase",
+		"org.apache.hadoop.hbase.snapshot.DeleteSnapshot",
+		fmt.Sprintf("--table %s", tablename),
+		fmt.Sprintf("--name %s", snapshotName)).Output()
+	if err != nil {
+		log.Error.Println(err)
+		return ""
+	}
+
+	log.Info.Println(string(out))
+	return snapshotName
+}
+
+func DeleteSnapshot(namespace, tablename, timestamp string) string {
+	return deleteSnapshot(namespace, tablename, timestamp)
+}
+
+func listSnapshots() []string {
+	out, err := exec.Command(
+		"hbase",
+		"org.apache.hadoop.hbase.snapshot.SnapshotInfo",
+		"-list-snapshots",
+	).Output()
+	if err != nil {
+		log.Error.Println(err)
+		return nil
+	}
+
+	re := regexp.MustCompile(fmt.Sprintf(".*%s[^\\s]*", uniqueKey))
+	return re.FindAllString(string(out), -1)
+}
+
+func ListSnapshots() []string {
+	return listSnapshots()
+}
+
+func writeAndGetTmpFile(cmds []string) (filename string) {
+	const tmpFilename = "_tmp_"+uniqueKey+".sh"
+
+	err := os.Remove(tmpFilename)
 	if err != nil {
 		log.Error.Println(err)
 	}
 
-	if !stat.IsDir() {
-		return false
-	}
-
-	return true
-}
-
-func _copyToS3Bucket(client *hdfs.Client, sess *session.Session, dirname string, dst TargetS3, wg *sync.WaitGroup) {
-	defer wg.Done()
-	bases, err := client.ReadDir(dirname)
+	f, err := os.Create(tmpFilename)
 	if err != nil {
-		log.Error.Println(err)
-		return
+		panic(err)
 	}
 
-	for _, base := range bases {
-		log.Info.Println(base.Name())
-		fullPath := filepath.Join(dirname, base.Name())
-		if checkIsDir(client, fullPath) {
-			log.Warn.Println("It's not dir:", fullPath, "\nCopy file to", dst.BucketName)
-			wg.Add(1)
-			go _copyToS3Bucket(client, sess, fullPath, dst, wg)
-			continue
-		}
+	defer f.Close()
 
-		UploadFileToS3Bucket(sess, client, fullPath, dst)
-	}
-}
-
-func close(client *hdfs.Client) {
-	err := client.Close()
-	log.Error.Println(err)
-}
-
-func copyDirToS3Bucket(src SourceFile, dst TargetS3) {
-	hdfsclient := getHDFSClient(src)
-	if hdfsclient == nil {
-		log.Error.Println("Failed to create HDFS client")
-		return
-	}
-	defer close(hdfsclient)
-
-	sess := getAWSClient(dst)
-	if sess == nil {
-		log.Error.Println("Failed to create AWS client")
-		return
-	}
-
-	if !checkIsDir(hdfsclient, src.Filename) {
-		log.Warn.Println("It's not dir:", src.Filename, "\nCopy file to", dst.BucketName)
-		UploadFileToS3Bucket(sess, hdfsclient, src.Filename, dst)
-		return
-	}
-
-	log.Info.Printf("Start copying dir %s -> %s\n", src.Filename, dst.BucketName)
-
-	// each goroutine backups one dir
-	var wg sync.WaitGroup
-
-	wg.Add(1)
-	go _copyToS3Bucket(hdfsclient, sess, src.Filename, dst, &wg)
-	wg.Wait()
-}
-
-func CopyToS3Bucket(src SourceFile, dst TargetS3) {
-	copyDirToS3Bucket(src, dst)
-}
-
-func getNamespaces(src SourceFile) (names []string, sizes []string) {
-	hdfsclient := getHDFSClient(src)
-	if hdfsclient == nil {
-		log.Error.Println("Failed to create HDFS client")
-		return nil, nil
-	}
-	defer close(hdfsclient)
-
-	stat, err := hdfsclient.Stat(src.Filename)
-	if err != nil {
+	if err := f.Chmod(0666); err != nil {
 		log.Error.Println(err)
 	}
 
-	if !stat.IsDir() {
-		log.Warn.Println("It's not dir:", src.Filename)
-		return nil, nil
-	}
-
-	namespaces, err := hdfsclient.ReadDir(src.Filename)
-
-	names = make([]string, len(namespaces))
-	sizes = make([]string, len(namespaces))
-
-	for i, namespace := range namespaces {
-		names[i] = namespace.Name()
-		stat, err := hdfsclient.GetContentSummary(filepath.Join(src.Filename, namespace.Name()))
-		if err != nil {
+	for _, cmd := range cmds {
+		if _, err = f.WriteString(cmd); err != nil {
 			log.Error.Println(err)
+			return
 		}
-
-		sizes[i] = strconv.Itoa(int(stat.Size()))
 	}
 
-	return names, sizes
+	return tmpFilename
 }
 
-func GetNamespaces(src SourceFile) ([]string, []string) {
-	return getNamespaces(src)
+func createTableFromSnapshot(snapshotname string)  (string, error) {
+	var cmds []string
+
+	cmds = append(cmds, fmt.Sprintf("clone_snapshot '%s', '%s_table'", snapshotname, snapshotname))
+	tmpFilename := writeAndGetTmpFile(cmds)
+
+	log.Info.Println("Creating table from snapshot", snapshotname)
+	out, err := exec.Command(
+		"hbase",
+		"shell",
+		tmpFilename,
+	).Output()
+	if err != nil {
+		log.Error.Println(err)
+		return "", err
+	}
+
+	log.Info.Println(string(out))
+	return snapshotname+"_table", nil
+}
+
+func CreateTableFromSnapshot(snapshotname string) (string, error) {
+	return createTableFromSnapshot(snapshotname)
 }
