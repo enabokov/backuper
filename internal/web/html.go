@@ -37,6 +37,6 @@ func render(w http.ResponseWriter, ctx interface{}, page string) {
 			append([]string{wd + "/web/template/base.html"}, filepath.Join(wd+"/web/template/", page))...))
 
 	if err := tmpl.Execute(w, ctx); err != nil {
-		log.Error.Fatalln(err)
+		log.Error.Println(err)
 	}
 }

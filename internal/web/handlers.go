@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/enabokov/backuper/internal/config"
 	"github.com/enabokov/backuper/internal/log"
@@ -26,12 +27,6 @@ func init() {
 	connPool = pool.GetPool()
 	minions = make(map[string]string)
 }
-
-// TODO: tmp cache -> change to real cache
-var cacheNamespaces []map[string]string
-var cacheAlerts []string
-
-// tmp cache
 
 func getIndexPage(w http.ResponseWriter, r *http.Request) {
 	log.Info.Println(r.URL.Path)
@@ -64,7 +59,7 @@ func getIndexPage(w http.ResponseWriter, r *http.Request) {
 func backupStart(w http.ResponseWriter, r *http.Request) {
 	log.Info.Println(r.URL.Path)
 
-	params, err := escapeParams(r, "host", "port", "db", "path")
+	params, err := escapeParams(r, "host", "port", "db", "table", "namespace")
 	if err != nil {
 		log.Error.Println(err)
 		http.Redirect(w, r, "/400", http.StatusFound)
@@ -76,35 +71,28 @@ func backupStart(w http.ResponseWriter, r *http.Request) {
 		log.Error.Println(err)
 	}
 
-	log.Info.Println("Start backup", params["host"], port)
-
+	log.Info.Printf("Start backup %s, %s, %d", params["table"], params["host"], port)
 	conn := connPool.GRPCConnect(r.Context(), params["host"], port, grpc.WithInsecure())
 	client := minion.NewMinionClient(conn)
-	msg, err := client.StartBackup(context.Background(), &minion.Query{Db: params["db"], Query: params["path"]})
+	msg, err := client.StartBackup(context.Background(), &minion.Query{Db: params["db"], Namespace: params["namespace"], Table: params["table"]})
 	if err != nil {
 		log.Error.Println(err)
 		return
 	}
 	connPool.GRPCDisconnect(conn)
 
-	cacheAlerts = append(cacheAlerts, msg.Msg)
-	log.Info.Println(msg)
-	ctx := HTMLContext{
-		"Minions":    minions,
-		"Alerts":     []string{msg.Msg},
-		"Db":         params["db"],
-		"Host":       params["host"],
-		"Port":       params["port"],
-		"Namespaces": cacheNamespaces,
-	}
+	config.Cache.Set(`alerts`, msg.Msg, 1*time.Minute)
 
-	redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%s", params["db"], params["host"], params["port"])
+	redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%d", params["db"], params["host"], port)
 	http.Redirect(w, r, redirectUrl, 302)
-	render(w, ctx, "progress.html")
 }
 
 func backupProgress(w http.ResponseWriter, r *http.Request) {
-	log.Info.Println(r.URL.Path)
+	var (
+		tables []map[string]string
+		alerts []string
+	)
+
 	params, err := escapeParams(r, "db", "host", "port")
 	if err != nil {
 		log.Error.Println(err)
@@ -120,36 +108,74 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 
 	conn := connPool.GRPCConnect(r.Context(), params[`host`], port, grpc.WithInsecure())
 	client := minion.NewMinionClient(conn)
-	namespaces, err := client.GetNamespaces(context.Background(), &minion.Query{Db: params[`db`], Query: params[`path`]})
-	if err != nil {
-		log.Error.Println(err)
-		return
+
+	_tablesFromCache, ok := config.Cache.Get(params[`db`] + `:tables`)
+	if !ok {
+		tables, err := client.GetTables(context.Background(), &minion.Query{Db: params[`db`], Namespace: "", Table: ""})
+		if err != nil {
+			log.Error.Println(err)
+			return
+		}
+
+		var _tmpTables []map[string]string
+		for _, tb := range tables.Tables {
+			if strings.EqualFold(tb, "TABLE") ||
+				strings.EqualFold(tb, "147") ||
+				strings.EqualFold(tb, "") ||
+				strings.EqualFold(tb, "HBase") ||
+				strings.EqualFold(tb, "Type") ||
+				strings.EqualFold(tb, "Version") {
+				continue
+			}
+
+			parts := strings.Split(tb, ":")
+
+			var (
+				namespace string
+				tablename string
+			)
+
+			if len(parts) > 1 {
+				namespace = parts[0]
+				tablename = parts[1]
+			} else {
+				namespace = "none"
+				tablename = parts[0]
+			}
+
+			_tmpTables = append(
+				_tmpTables,
+				map[string]string{
+					`namespace`: namespace,
+					`tablename`: tablename,
+				},
+			)
+		}
+
+		config.Cache.Set(params[`db`]+`:tables`, _tmpTables, 15*time.Minute)
+		_tablesFromCache = _tmpTables
 	}
+	tables = _tablesFromCache.([]map[string]string)
+
 	connPool.GRPCDisconnect(conn)
 
-	// TODO : tmp cache -> change to real cache
-	cacheNamespaces = nil
-	for i, ns := range namespaces.Names {
-		cacheNamespaces = append(
-			cacheNamespaces,
-			map[string]string{
-				`name`: ns,
-				`size`: namespaces.Sizes[i],
-				`ok`:   strconv.FormatFloat(namespaces.Ok[i], 'f', 1, 64),
-			},
-		)
+	_Alerts, ok := config.Cache.Get(`alerts`)
+	if !ok {
+		log.Warn.Println("No alerts")
+	}
+
+	if _Alerts != nil {
+		alerts = append(alerts, _Alerts.(string))
 	}
 
 	ctx := HTMLContext{
-		"Db":         params["db"],
-		"Host":       params["host"],
-		"Port":       params["port"],
-		"Alerts":     cacheAlerts,
-		"Namespaces": cacheNamespaces,
+		"Db":     params["db"],
+		"Host":   params["host"],
+		"Port":   params["port"],
+		"Alerts": alerts,
+		"Tables": tables,
 	}
 
-	// TODO: tmp cache -> change to real cache
-	cacheAlerts = nil
 	render(w, ctx, "progress.html")
 }
 
