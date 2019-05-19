@@ -3,14 +3,32 @@ syntax = "proto3";
 package minion;
 
 service Minion {
-    rpc GetNamespaces(Query) returns (Namespaces) {}
-    rpc GetTables(Query) returns (Tables) {}
+    rpc GetNamespaces(QueryGetNamespaces) returns (Namespaces) {}
+    rpc GetTables(QueryGetTables) returns (Tables) {}
 
-    rpc StartBackup(Query) returns (Response) {}
-    rpc StopBackup(Query) returns (Response) {}
+    rpc ScheduleBackup(QueryScheduleBackup) returns (Response) {}
+    rpc UnscheduleBackup(QueryScheduleBackup) returns (Response) {}
+    rpc StartBackup(QueryStartBackup) returns (Response) {}
 }
 
-message Query {
+message QueryGetNamespaces {
+    string db = 1;
+    string namespace = 2;
+}
+
+message QueryGetTables {
+    string db = 1;
+    string table = 2;
+}
+
+message QueryScheduleBackup {
+    string db = 1;
+    string namespace = 2;
+    string table = 3;
+    string timestamp = 4;
+}
+
+message QueryStartBackup {
     string db = 1;
     string namespace = 2;
     string table = 3;

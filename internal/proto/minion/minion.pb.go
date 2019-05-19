@@ -22,7 +22,164 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-type Query struct {
+type QueryGetNamespaces struct {
+	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
+	Namespace            string   `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryGetNamespaces) Reset()         { *m = QueryGetNamespaces{} }
+func (m *QueryGetNamespaces) String() string { return proto.CompactTextString(m) }
+func (*QueryGetNamespaces) ProtoMessage()    {}
+func (*QueryGetNamespaces) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{0}
+}
+
+func (m *QueryGetNamespaces) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryGetNamespaces.Unmarshal(m, b)
+}
+func (m *QueryGetNamespaces) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryGetNamespaces.Marshal(b, m, deterministic)
+}
+func (m *QueryGetNamespaces) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetNamespaces.Merge(m, src)
+}
+func (m *QueryGetNamespaces) XXX_Size() int {
+	return xxx_messageInfo_QueryGetNamespaces.Size(m)
+}
+func (m *QueryGetNamespaces) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetNamespaces.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetNamespaces proto.InternalMessageInfo
+
+func (m *QueryGetNamespaces) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+func (m *QueryGetNamespaces) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+type QueryGetTables struct {
+	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
+	Table                string   `protobuf:"bytes,2,opt,name=table,proto3" json:"table,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryGetTables) Reset()         { *m = QueryGetTables{} }
+func (m *QueryGetTables) String() string { return proto.CompactTextString(m) }
+func (*QueryGetTables) ProtoMessage()    {}
+func (*QueryGetTables) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{1}
+}
+
+func (m *QueryGetTables) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryGetTables.Unmarshal(m, b)
+}
+func (m *QueryGetTables) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryGetTables.Marshal(b, m, deterministic)
+}
+func (m *QueryGetTables) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetTables.Merge(m, src)
+}
+func (m *QueryGetTables) XXX_Size() int {
+	return xxx_messageInfo_QueryGetTables.Size(m)
+}
+func (m *QueryGetTables) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetTables.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetTables proto.InternalMessageInfo
+
+func (m *QueryGetTables) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+func (m *QueryGetTables) GetTable() string {
+	if m != nil {
+		return m.Table
+	}
+	return ""
+}
+
+type QueryScheduleBackup struct {
+	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
+	Namespace            string   `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	Table                string   `protobuf:"bytes,3,opt,name=table,proto3" json:"table,omitempty"`
+	Timestamp            string   `protobuf:"bytes,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryScheduleBackup) Reset()         { *m = QueryScheduleBackup{} }
+func (m *QueryScheduleBackup) String() string { return proto.CompactTextString(m) }
+func (*QueryScheduleBackup) ProtoMessage()    {}
+func (*QueryScheduleBackup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{2}
+}
+
+func (m *QueryScheduleBackup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryScheduleBackup.Unmarshal(m, b)
+}
+func (m *QueryScheduleBackup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryScheduleBackup.Marshal(b, m, deterministic)
+}
+func (m *QueryScheduleBackup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryScheduleBackup.Merge(m, src)
+}
+func (m *QueryScheduleBackup) XXX_Size() int {
+	return xxx_messageInfo_QueryScheduleBackup.Size(m)
+}
+func (m *QueryScheduleBackup) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryScheduleBackup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryScheduleBackup proto.InternalMessageInfo
+
+func (m *QueryScheduleBackup) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+func (m *QueryScheduleBackup) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *QueryScheduleBackup) GetTable() string {
+	if m != nil {
+		return m.Table
+	}
+	return ""
+}
+
+func (m *QueryScheduleBackup) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
+
+type QueryStartBackup struct {
 	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
 	Namespace            string   `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
 	Table                string   `protobuf:"bytes,3,opt,name=table,proto3" json:"table,omitempty"`
@@ -31,46 +188,46 @@ type Query struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Query) Reset()         { *m = Query{} }
-func (m *Query) String() string { return proto.CompactTextString(m) }
-func (*Query) ProtoMessage()    {}
-func (*Query) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{0}
+func (m *QueryStartBackup) Reset()         { *m = QueryStartBackup{} }
+func (m *QueryStartBackup) String() string { return proto.CompactTextString(m) }
+func (*QueryStartBackup) ProtoMessage()    {}
+func (*QueryStartBackup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{3}
 }
 
-func (m *Query) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Query.Unmarshal(m, b)
+func (m *QueryStartBackup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryStartBackup.Unmarshal(m, b)
 }
-func (m *Query) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Query.Marshal(b, m, deterministic)
+func (m *QueryStartBackup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryStartBackup.Marshal(b, m, deterministic)
 }
-func (m *Query) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Query.Merge(m, src)
+func (m *QueryStartBackup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryStartBackup.Merge(m, src)
 }
-func (m *Query) XXX_Size() int {
-	return xxx_messageInfo_Query.Size(m)
+func (m *QueryStartBackup) XXX_Size() int {
+	return xxx_messageInfo_QueryStartBackup.Size(m)
 }
-func (m *Query) XXX_DiscardUnknown() {
-	xxx_messageInfo_Query.DiscardUnknown(m)
+func (m *QueryStartBackup) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryStartBackup.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Query proto.InternalMessageInfo
+var xxx_messageInfo_QueryStartBackup proto.InternalMessageInfo
 
-func (m *Query) GetDb() string {
+func (m *QueryStartBackup) GetDb() string {
 	if m != nil {
 		return m.Db
 	}
 	return ""
 }
 
-func (m *Query) GetNamespace() string {
+func (m *QueryStartBackup) GetNamespace() string {
 	if m != nil {
 		return m.Namespace
 	}
 	return ""
 }
 
-func (m *Query) GetTable() string {
+func (m *QueryStartBackup) GetTable() string {
 	if m != nil {
 		return m.Table
 	}
@@ -90,7 +247,7 @@ func (m *Namespaces) Reset()         { *m = Namespaces{} }
 func (m *Namespaces) String() string { return proto.CompactTextString(m) }
 func (*Namespaces) ProtoMessage()    {}
 func (*Namespaces) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{1}
+	return fileDescriptor_70d86c67c629e4a9, []int{4}
 }
 
 func (m *Namespaces) XXX_Unmarshal(b []byte) error {
@@ -143,7 +300,7 @@ func (m *Tables) Reset()         { *m = Tables{} }
 func (m *Tables) String() string { return proto.CompactTextString(m) }
 func (*Tables) ProtoMessage()    {}
 func (*Tables) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{2}
+	return fileDescriptor_70d86c67c629e4a9, []int{5}
 }
 
 func (m *Tables) XXX_Unmarshal(b []byte) error {
@@ -182,7 +339,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{3}
+	return fileDescriptor_70d86c67c629e4a9, []int{6}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -211,7 +368,10 @@ func (m *Response) GetMsg() string {
 }
 
 func init() {
-	proto.RegisterType((*Query)(nil), "minion.Query")
+	proto.RegisterType((*QueryGetNamespaces)(nil), "minion.QueryGetNamespaces")
+	proto.RegisterType((*QueryGetTables)(nil), "minion.QueryGetTables")
+	proto.RegisterType((*QueryScheduleBackup)(nil), "minion.QueryScheduleBackup")
+	proto.RegisterType((*QueryStartBackup)(nil), "minion.QueryStartBackup")
 	proto.RegisterType((*Namespaces)(nil), "minion.Namespaces")
 	proto.RegisterType((*Tables)(nil), "minion.Tables")
 	proto.RegisterType((*Response)(nil), "minion.Response")
@@ -220,24 +380,29 @@ func init() {
 func init() { proto.RegisterFile("minion.proto", fileDescriptor_70d86c67c629e4a9) }
 
 var fileDescriptor_70d86c67c629e4a9 = []byte{
-	// 268 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0xc1, 0x4a, 0x03, 0x31,
-	0x10, 0x86, 0x37, 0x09, 0x0d, 0xee, 0x68, 0x4b, 0x19, 0x44, 0x82, 0xf4, 0xb0, 0xe4, 0xd4, 0x83,
-	0x54, 0x51, 0x9f, 0xc0, 0x4b, 0x05, 0x51, 0x70, 0xeb, 0x0b, 0x64, 0xdb, 0x20, 0xcb, 0xba, 0x9b,
-	0xb0, 0x49, 0x0f, 0xfa, 0x92, 0xbe, 0x92, 0x24, 0xbb, 0xa1, 0xd2, 0x53, 0x6f, 0xf9, 0xfe, 0xf9,
-	0x67, 0xf2, 0x4f, 0x02, 0x17, 0x6d, 0xdd, 0xd5, 0xa6, 0x5b, 0xd9, 0xde, 0x78, 0x83, 0x7c, 0x20,
-	0xf9, 0x02, 0x93, 0xf7, 0xbd, 0xee, 0xbf, 0x71, 0x06, 0x74, 0x57, 0x09, 0x52, 0x90, 0x65, 0x5e,
-	0xd2, 0x5d, 0x85, 0x0b, 0xc8, 0x3b, 0xd5, 0x6a, 0x67, 0xd5, 0x56, 0x0b, 0x1a, 0xe5, 0x83, 0x80,
-	0x97, 0x30, 0xf1, 0xaa, 0xfa, 0xd2, 0x82, 0xc5, 0xca, 0x00, 0xf2, 0x19, 0xe0, 0x2d, 0x59, 0x5c,
-	0xf0, 0xc4, 0x06, 0x41, 0x0a, 0x16, 0x3c, 0x11, 0x82, 0xea, 0xea, 0x1f, 0xed, 0x04, 0x1d, 0xd4,
-	0x08, 0xe1, 0x76, 0xd3, 0x08, 0x56, 0xb0, 0x25, 0x29, 0xa9, 0x69, 0x64, 0x01, 0xfc, 0x23, 0x8c,
-	0x74, 0x78, 0x05, 0x3c, 0x0e, 0x4f, 0x63, 0x46, 0x92, 0x0b, 0x38, 0x2b, 0xb5, 0xb3, 0xa6, 0x73,
-	0x1a, 0xe7, 0xc0, 0x5a, 0xf7, 0x39, 0x86, 0x0f, 0xc7, 0xfb, 0x5f, 0x02, 0xfc, 0x35, 0x6e, 0x88,
-	0x8f, 0x30, 0x5d, 0x6b, 0xff, 0x2f, 0xd7, 0x74, 0x35, 0xbe, 0x44, 0x5c, 0xfc, 0x1a, 0x13, 0x1e,
-	0x2c, 0x32, 0xc3, 0x1b, 0xc8, 0xd7, 0xda, 0x8f, 0x19, 0x8e, 0x3a, 0x66, 0x09, 0x87, 0xb2, 0xcc,
-	0xf0, 0x0e, 0xce, 0x37, 0x5e, 0xf5, 0xfe, 0x49, 0x6d, 0x9b, 0xbd, 0x3d, 0xf6, 0xcf, 0x13, 0xa6,
-	0xc0, 0x32, 0xc3, 0x5b, 0x80, 0x8d, 0x37, 0xf6, 0xe4, 0x86, 0x8a, 0xc7, 0x7f, 0x7b, 0xf8, 0x0b,
-	0x00, 0x00, 0xff, 0xff, 0x1c, 0x6d, 0x2c, 0x80, 0xc7, 0x01, 0x00, 0x00,
+	// 337 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x93, 0x4f, 0x4f, 0x83, 0x30,
+	0x18, 0xc6, 0x47, 0x71, 0xc4, 0xbd, 0x2a, 0x21, 0x75, 0x59, 0x1a, 0xdc, 0x81, 0xf4, 0xb4, 0xd3,
+	0x0e, 0x1a, 0xbd, 0x78, 0xda, 0x3c, 0xe8, 0x45, 0x13, 0xe7, 0x9f, 0x7b, 0xd9, 0x1a, 0x25, 0x1b,
+	0x94, 0xac, 0x5d, 0x8c, 0x7e, 0x41, 0xbf, 0x96, 0x69, 0x4b, 0x05, 0xe6, 0x2e, 0x46, 0x6f, 0xbc,
+	0xcf, 0xc3, 0xef, 0x79, 0xa1, 0x0f, 0xc0, 0x61, 0x9e, 0x15, 0x99, 0x28, 0xc6, 0xe5, 0x5a, 0x28,
+	0x81, 0x03, 0x3b, 0xd1, 0x29, 0xe0, 0xfb, 0x0d, 0x5f, 0xbf, 0x5f, 0x73, 0x75, 0xc7, 0x72, 0x2e,
+	0x4b, 0x36, 0xe7, 0x12, 0x87, 0x80, 0x16, 0x29, 0xf1, 0x12, 0x6f, 0xd4, 0x9b, 0xa1, 0x45, 0x8a,
+	0x87, 0xd0, 0x2b, 0x9c, 0x4b, 0x90, 0x91, 0x6b, 0x81, 0x5e, 0x40, 0xe8, 0x32, 0x1e, 0x59, 0xba,
+	0xda, 0xc1, 0xf7, 0xa1, 0xab, 0xb4, 0x53, 0xb1, 0x76, 0xa0, 0x6f, 0x70, 0x6c, 0xb8, 0x87, 0xf9,
+	0x2b, 0x5f, 0x6c, 0x56, 0x7c, 0xca, 0xe6, 0xcb, 0x4d, 0xf9, 0xbb, 0xe5, 0x75, 0xb4, 0xdf, 0x88,
+	0xd6, 0x8c, 0xca, 0x72, 0x2e, 0x15, 0xcb, 0x4b, 0xb2, 0x67, 0x99, 0x6f, 0x81, 0x3e, 0x43, 0x64,
+	0x17, 0x2b, 0xb6, 0x56, 0xff, 0xb7, 0x95, 0xde, 0x00, 0x34, 0x0e, 0xb1, 0x0f, 0x5d, 0x03, 0x10,
+	0x2f, 0xf1, 0xf5, 0x3d, 0x66, 0xd0, 0xaa, 0xcc, 0x3e, 0xb8, 0x24, 0xc8, 0xaa, 0x66, 0xd0, 0xdb,
+	0xc5, 0x92, 0xf8, 0x89, 0x3f, 0xf2, 0x66, 0x48, 0x2c, 0x69, 0x02, 0x41, 0x75, 0x94, 0x03, 0x08,
+	0x4c, 0xb8, 0x8b, 0xa9, 0x26, 0x3a, 0x84, 0xfd, 0x19, 0x97, 0xa5, 0x28, 0x24, 0xc7, 0x11, 0xf8,
+	0xb9, 0x7c, 0xa9, 0x1e, 0x5e, 0x5f, 0x9e, 0x7e, 0x22, 0x08, 0x6e, 0x4d, 0xc3, 0x78, 0x02, 0x47,
+	0xed, 0x72, 0xe3, 0x71, 0xf5, 0x25, 0xfc, 0x2c, 0x3e, 0xc6, 0xce, 0xab, 0x35, 0xda, 0xc1, 0xe7,
+	0xd0, 0xab, 0xbb, 0x1d, 0x6c, 0xe3, 0x56, 0x8f, 0x43, 0xa7, 0xdb, 0x99, 0x76, 0xf0, 0x04, 0xc2,
+	0xad, 0x6a, 0x4f, 0x5a, 0x6c, 0xdb, 0x8c, 0x23, 0x67, 0xba, 0xf7, 0xa2, 0x1d, 0x7c, 0x05, 0xd1,
+	0x53, 0x21, 0xff, 0x18, 0x72, 0x09, 0x07, 0xcd, 0xa6, 0x49, 0x9b, 0xaf, 0x9d, 0x5d, 0x70, 0x1a,
+	0x98, 0xff, 0xe5, 0xec, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x26, 0xbd, 0x4e, 0x19, 0x3f, 0x03, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -252,10 +417,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MinionClient interface {
-	GetNamespaces(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Namespaces, error)
-	GetTables(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Tables, error)
-	StartBackup(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Response, error)
-	StopBackup(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Response, error)
+	GetNamespaces(ctx context.Context, in *QueryGetNamespaces, opts ...grpc.CallOption) (*Namespaces, error)
+	GetTables(ctx context.Context, in *QueryGetTables, opts ...grpc.CallOption) (*Tables, error)
+	ScheduleBackup(ctx context.Context, in *QueryScheduleBackup, opts ...grpc.CallOption) (*Response, error)
+	UnscheduleBackup(ctx context.Context, in *QueryScheduleBackup, opts ...grpc.CallOption) (*Response, error)
+	StartBackup(ctx context.Context, in *QueryStartBackup, opts ...grpc.CallOption) (*Response, error)
 }
 
 type minionClient struct {
@@ -266,7 +432,7 @@ func NewMinionClient(cc *grpc.ClientConn) MinionClient {
 	return &minionClient{cc}
 }
 
-func (c *minionClient) GetNamespaces(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Namespaces, error) {
+func (c *minionClient) GetNamespaces(ctx context.Context, in *QueryGetNamespaces, opts ...grpc.CallOption) (*Namespaces, error) {
 	out := new(Namespaces)
 	err := c.cc.Invoke(ctx, "/minion.Minion/GetNamespaces", in, out, opts...)
 	if err != nil {
@@ -275,7 +441,7 @@ func (c *minionClient) GetNamespaces(ctx context.Context, in *Query, opts ...grp
 	return out, nil
 }
 
-func (c *minionClient) GetTables(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Tables, error) {
+func (c *minionClient) GetTables(ctx context.Context, in *QueryGetTables, opts ...grpc.CallOption) (*Tables, error) {
 	out := new(Tables)
 	err := c.cc.Invoke(ctx, "/minion.Minion/GetTables", in, out, opts...)
 	if err != nil {
@@ -284,7 +450,25 @@ func (c *minionClient) GetTables(ctx context.Context, in *Query, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *minionClient) StartBackup(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Response, error) {
+func (c *minionClient) ScheduleBackup(ctx context.Context, in *QueryScheduleBackup, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/minion.Minion/ScheduleBackup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *minionClient) UnscheduleBackup(ctx context.Context, in *QueryScheduleBackup, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/minion.Minion/UnscheduleBackup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *minionClient) StartBackup(ctx context.Context, in *QueryStartBackup, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/minion.Minion/StartBackup", in, out, opts...)
 	if err != nil {
@@ -293,21 +477,13 @@ func (c *minionClient) StartBackup(ctx context.Context, in *Query, opts ...grpc.
 	return out, nil
 }
 
-func (c *minionClient) StopBackup(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/minion.Minion/StopBackup", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MinionServer is the server API for Minion service.
 type MinionServer interface {
-	GetNamespaces(context.Context, *Query) (*Namespaces, error)
-	GetTables(context.Context, *Query) (*Tables, error)
-	StartBackup(context.Context, *Query) (*Response, error)
-	StopBackup(context.Context, *Query) (*Response, error)
+	GetNamespaces(context.Context, *QueryGetNamespaces) (*Namespaces, error)
+	GetTables(context.Context, *QueryGetTables) (*Tables, error)
+	ScheduleBackup(context.Context, *QueryScheduleBackup) (*Response, error)
+	UnscheduleBackup(context.Context, *QueryScheduleBackup) (*Response, error)
+	StartBackup(context.Context, *QueryStartBackup) (*Response, error)
 }
 
 func RegisterMinionServer(s *grpc.Server, srv MinionServer) {
@@ -315,7 +491,7 @@ func RegisterMinionServer(s *grpc.Server, srv MinionServer) {
 }
 
 func _Minion_GetNamespaces_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Query)
+	in := new(QueryGetNamespaces)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -327,13 +503,13 @@ func _Minion_GetNamespaces_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: "/minion.Minion/GetNamespaces",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MinionServer).GetNamespaces(ctx, req.(*Query))
+		return srv.(MinionServer).GetNamespaces(ctx, req.(*QueryGetNamespaces))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Minion_GetTables_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Query)
+	in := new(QueryGetTables)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -345,13 +521,49 @@ func _Minion_GetTables_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/minion.Minion/GetTables",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MinionServer).GetTables(ctx, req.(*Query))
+		return srv.(MinionServer).GetTables(ctx, req.(*QueryGetTables))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Minion_ScheduleBackup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryScheduleBackup)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MinionServer).ScheduleBackup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/minion.Minion/ScheduleBackup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MinionServer).ScheduleBackup(ctx, req.(*QueryScheduleBackup))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Minion_UnscheduleBackup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryScheduleBackup)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MinionServer).UnscheduleBackup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/minion.Minion/UnscheduleBackup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MinionServer).UnscheduleBackup(ctx, req.(*QueryScheduleBackup))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Minion_StartBackup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Query)
+	in := new(QueryStartBackup)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -363,25 +575,7 @@ func _Minion_StartBackup_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/minion.Minion/StartBackup",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MinionServer).StartBackup(ctx, req.(*Query))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Minion_StopBackup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Query)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MinionServer).StopBackup(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/minion.Minion/StopBackup",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MinionServer).StopBackup(ctx, req.(*Query))
+		return srv.(MinionServer).StartBackup(ctx, req.(*QueryStartBackup))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -399,12 +593,16 @@ var _Minion_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Minion_GetTables_Handler,
 		},
 		{
-			MethodName: "StartBackup",
-			Handler:    _Minion_StartBackup_Handler,
+			MethodName: "ScheduleBackup",
+			Handler:    _Minion_ScheduleBackup_Handler,
 		},
 		{
-			MethodName: "StopBackup",
-			Handler:    _Minion_StopBackup_Handler,
+			MethodName: "UnscheduleBackup",
+			Handler:    _Minion_UnscheduleBackup_Handler,
+		},
+		{
+			MethodName: "StartBackup",
+			Handler:    _Minion_StartBackup_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
