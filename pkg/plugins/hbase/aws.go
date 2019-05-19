@@ -6,16 +6,18 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/colinmarc/hdfs"
-	"github.com/enabokov/backuper/internal/log"
+	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/enabokov/backuper/internal/log"
+	"github.com/enabokov/backuper/pkg/plugins/globals"
 )
 
-func getAWSClient(conf S3Options) *session.Session {
+func getAWSClient(options globals.S3Options) *session.Session {
 	awsCfg := &aws.Config{
-		Region: aws.String(conf.Region),
+		Region: aws.String(options.Region),
 	}
 
 	s, err := session.NewSession(awsCfg)
@@ -51,49 +53,26 @@ func calcLocalChecksum(client *hdfs.Client, filename string) string {
 	return fmt.Sprintf("%x", md5.Sum(contents))
 }
 
-func uploadFileToS3Bucket(sess *session.Session, c *hdfs.Client, filename string, conf S3Options) bool {
-	file, err := c.Open(filename)
+func uploadSnapshotToS3(snapshotname string, options globals.S3Options) bool {
+	key := filepath.Join(options.BucketName, options.Key, snapshotname)
+	log.Info.Printf("Start uploading %s to S3 %s\n", snapshotname, key)
+	out, err := exec.Command(
+		"hbase",
+		"org.apache.hadoop.hbase.snapshot.ExportSnapshot",
+		fmt.Sprintf("-snapshot %s", snapshotname),
+		fmt.Sprintf("-copy-to s3a://%s", key)).Output()
 	if err != nil {
-		log.Error.Println("Failed to open src file")
 		log.Error.Println(err)
-	}
-	defer file.Close()
-
-	key := filepath.Join(conf.Key, filename)
-	log.Info.Printf("Start backup %s -> s3://%s", filename, key)
-
-	objPutInput := &s3.PutObjectInput{
-		Bucket: aws.String(conf.BucketName),
-		Key:    aws.String(key),
-		Body:   file,
-	}
-
-	// if failed, use multi part upload
-	if _, err := s3.New(sess).PutObject(objPutInput); err != nil {
-		log.Error.Println(err, filename)
-
-		objUploadInput := &s3manager.UploadInput{
-			Bucket: aws.String(conf.BucketName),
-			Key:    aws.String(key),
-			Body:   file,
-		}
-
-		if _, err = s3manager.NewUploader(sess).Upload(objUploadInput); err != nil {
-			log.Error.Println(err, filename)
-		}
-
 		return false
 	}
 
-	log.Info.Printf("Finish backup %s -> s3://%s", filename, key)
-
-	checksumLocal := calcLocalChecksum(c, filename)
-	checksumRemote := calcRemoteChecksum(sess, conf.BucketName, key)
-	return checksumRemote == checksumLocal
+	log.Info.Printf("Finish uploading %s to S3 %s\n", snapshotname, key)
+	log.Info.Println(string(out))
+	return true
 }
 
 // TODO: in progress: finish download from S3 bucket objects
-//func uploadFileFromS3(sess *session.Session, c *hdfs.Client, filename string, conf S3Options) bool {
+//func uploadFileFromS3(sess *session.Session, c *hdfs.Client, filename string, conf globals.S3Options) bool {
 //	file, err := c.Open(filename)
 //	if err != nil {
 //		log.Error.Println("Failed to open src file")

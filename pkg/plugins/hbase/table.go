@@ -1,9 +1,12 @@
 package hbase
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/enabokov/backuper/internal/log"
@@ -40,9 +43,9 @@ func writeAndGetTmpFile(cmds []string) (filename string) {
 }
 
 func createTableFromSnapshot(snapshotname string) (string, error) {
-	var cmds []string
-
-	cmds = append(cmds, fmt.Sprintf("clone_snapshot '%s', '%s_table'", snapshotname, snapshotname))
+	cmds := []string{
+		fmt.Sprintf("clone_snapshot '%s', '%s_table'", snapshotname, snapshotname),
+	}
 	tmpFilename := writeAndGetTmpFile(cmds)
 
 	log.Info.Println("Creating table from snapshot", snapshotname)
@@ -61,7 +64,7 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 }
 
 func createSnapshotFromTable(namespace string, tablename string) string {
-	if namespace == "" {
+	if namespace == "none" {
 		namespace = "non"
 	}
 
@@ -70,7 +73,7 @@ func createSnapshotFromTable(namespace string, tablename string) string {
 		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s-%s", namespace, tablename, uniqueKey, t.Format("2006-01-02-15-04-05"))
 	)
 
-	log.Info.Println("Creating snapshot", snapshotName)
+	log.Info.Println("Create snapshot", snapshotName)
 	out, err := exec.Command(
 		"hbase",
 		"org.apache.hadoop.hbase.snapshot.CreateSnapshot",
@@ -80,12 +83,46 @@ func createSnapshotFromTable(namespace string, tablename string) string {
 		log.Error.Println(err)
 		return ""
 	}
-
+	log.Info.Println("Done: snapshot", snapshotName)
 	log.Info.Println(string(out))
 	return snapshotName
 }
 
-func backupTableToS3(socket globals.Socket, table string, options globals.S3Options) {
-	snapshotname := createSnapshotFromTable("", table)
+func getTables(socket globals.Socket) (tables []string) {
+	cmds := []string{`list`}
+	tmpFilename := writeAndGetTmpFile(cmds)
 
+	log.Info.Println("Getting list of tables from hbase")
+	out, err := exec.Command(
+		"hbase",
+		"shell",
+		tmpFilename,
+	).Output()
+	if err != nil {
+		log.Error.Println(err)
+		return nil
+	}
+
+	reader := bufio.NewReader(
+		strings.NewReader(string(out)))
+	re := regexp.MustCompile(fmt.Sprintf("^[a-zA-Z0-9:_.-]*"))
+	for {
+		line, err := reader.ReadString('\n')
+		line = re.FindString(line)
+		tables = append(tables, line)
+		if err != nil {
+			break
+		}
+	}
+
+	return tables
+}
+
+func backupTableToS3(socket globals.Socket, namespace string, table string, options globals.S3Options) {
+	snapshotname := createSnapshotFromTable(namespace, table)
+	ok := uploadSnapshotToS3(snapshotname, options)
+	if !ok {
+		log.Error.Printf("failed to upload snapshot %s\n", snapshotname)
+	}
+	deleteSnapshot(snapshotname)
 }

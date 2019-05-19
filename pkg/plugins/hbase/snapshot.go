@@ -24,26 +24,6 @@ func listSnapshots() []string {
 }
 
 // TODO: correct it
-func deleteSnapshot(namespace, tablename, timestamp string) string {
-	if namespace == "" {
-		namespace = "non"
-	}
-
-	var (
-		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s-%s", namespace, tablename, uniqueKey, timestamp)
-	)
-
-	log.Info.Println("Deleting snapshot", snapshotName)
-	out, err := exec.Command(
-		"hbase",
-		"org.apache.hadoop.hbase.snapshot.DeleteSnapshot",
-		fmt.Sprintf("--table %s", tablename),
-		fmt.Sprintf("--name %s", snapshotName)).Output()
-	if err != nil {
-		log.Error.Println(err)
-		return ""
-	}
-
-	log.Info.Println(string(out))
-	return snapshotName
+func deleteSnapshot(snapshotname string) string {
+	return ""
 }

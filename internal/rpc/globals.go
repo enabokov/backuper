@@ -4,13 +4,10 @@ type Minion struct{}
 
 type Database interface {
 	GetNamespaces(socket interface{}) (names, sizes []string, checksums []float64)
+	GetTables(socket interface{}) []string
 
-	CreateSnapshot(namespace, tablename string) string
-	CreateTableFromSnapshot(snapshot string) (string, error)
+	BackupTableToS3(socket interface{}, namespace string, tablename string, s3 interface{})
 
-	CopyToS3Bucket(socket interface{}, src string, s3 interface{})
-
-	DeleteSnapshot(namespace, tablename, timestamp string) string
 	ListSnapshots() []string
 }
 

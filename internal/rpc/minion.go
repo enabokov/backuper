@@ -10,7 +10,9 @@ import (
 	"github.com/enabokov/backuper/internal/log"
 	"github.com/enabokov/backuper/internal/proto/minion"
 	"github.com/enabokov/backuper/internal/service"
+	"github.com/enabokov/backuper/pkg/plugins/globals"
 	"github.com/enabokov/backuper/pkg/plugins/hbase"
+	"github.com/enabokov/backuper/pkg/plugins/postgres"
 )
 
 var (
@@ -39,7 +41,7 @@ func (m *Minion) GetNamespaces(ctx context.Context, query *minion.Query) (*minio
 	case `hbase`:
 		conf := c.GetMinionConf()
 
-		sock = hbase.Socket{
+		sock = globals.Socket{
 			IP:   conf.NameNode.Host,
 			Port: strconv.Itoa(conf.NameNode.Port),
 		}
@@ -47,7 +49,13 @@ func (m *Minion) GetNamespaces(ctx context.Context, query *minion.Query) (*minio
 		ctxDb.setDatabase(&hbase.HBase{})
 		break
 	case `postgres`:
-		//ctxDb.setDatabase(&postgres.Postgres{})
+		conf := c.GetMinionConf()
+		sock = globals.Socket{
+			IP:   conf.NameNode.Host,
+			Port: strconv.Itoa(conf.NameNode.Port),
+		}
+
+		ctxDb.setDatabase(&postgres.Postgres{})
 		break
 	}
 
@@ -56,7 +64,41 @@ func (m *Minion) GetNamespaces(ctx context.Context, query *minion.Query) (*minio
 }
 
 func (m *Minion) GetTables(ctx context.Context, query *minion.Query) (*minion.Tables, error) {
-	return &minion.Tables{Tables: []string{"some tables"}}, nil
+	log.Info.Println(query)
+
+	var (
+		// input
+		sock  interface{}
+		ctxDb StrategyCli
+
+		// output
+		tables []string
+	)
+
+	switch query.Db {
+	case `hbase`:
+		conf := c.GetMinionConf()
+
+		sock = globals.Socket{
+			IP:   conf.NameNode.Host,
+			Port: strconv.Itoa(conf.NameNode.Port),
+		}
+
+		ctxDb.setDatabase(&hbase.HBase{})
+		break
+	case `postgres`:
+		conf := c.GetMinionConf()
+		sock = globals.Socket{
+			IP:   conf.NameNode.Host,
+			Port: strconv.Itoa(conf.NameNode.Port),
+		}
+
+		ctxDb.setDatabase(&postgres.Postgres{})
+		break
+	}
+
+	tables = ctxDb.getDatabase().GetTables(sock)
+	return &minion.Tables{Tables: tables}, nil
 }
 
 func (m *Minion) StartBackup(ctx context.Context, query *minion.Query) (*minion.Response, error) {
@@ -69,23 +111,24 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.Query) (*minion.
 		ctxDb StrategyCli
 
 		// output
-		msg         string
-		srcFilename string
+		msg       string
+		namespace string
+		tablename string
 	)
 
 	switch query.Db {
 	case `hbase`:
 		conf := c.GetMinionConf()
 
-		sock = hbase.Socket{
+		sock = globals.Socket{
 			IP:   conf.NameNode.Host,
 			Port: strconv.Itoa(conf.NameNode.Port),
 		}
 
-		// TODO: add check in case sql injections
-		srcFilename = query.Query
+		namespace = query.Namespace
+		tablename = query.Table
 
-		s3dst = hbase.S3Options{
+		s3dst = globals.S3Options{
 			Region:     conf.Targets.S3.Bucket.Region,
 			BucketName: conf.Targets.S3.Bucket.Name,
 			Key:        filepath.Join(`backup_hbase`, service.GetPrivateIP()),
@@ -94,15 +137,22 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.Query) (*minion.
 		ctxDb.setDatabase(&hbase.HBase{})
 		break
 	case `postgres`:
-		//ctxDb.setDatabase(&postgres.Postgres{})
+		conf := c.GetMinionConf()
+		s3dst = globals.S3Options{
+			Region:     conf.Targets.S3.Bucket.Region,
+			BucketName: conf.Targets.S3.Bucket.Name,
+			Key:        filepath.Join(`backup_postgres`, service.GetPrivateIP()),
+		}
+
+		ctxDb.setDatabase(&postgres.Postgres{})
 		break
 	}
 
-	go ctxDb.getDatabase().CopyToS3Bucket(sock, srcFilename, s3dst)
-	msg = fmt.Sprintf("Backup %s -> %s", srcFilename, s3dst)
+	go ctxDb.getDatabase().BackupTableToS3(sock, namespace, tablename, s3dst)
+	msg = fmt.Sprintf("Backup %s %s -> %s", namespace, tablename, s3dst.(globals.S3Options).BucketName)
 	return &minion.Response{Msg: msg}, nil
 }
 
 func (m *Minion) StopBackup(ctx context.Context, query *minion.Query) (*minion.Response, error) {
-	return &minion.Response{Msg: query.Query + " backup stopped"}, nil
+	return &minion.Response{Msg: query.Namespace + " backup stopped"}, nil
 }
