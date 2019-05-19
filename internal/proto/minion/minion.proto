@@ -12,7 +12,8 @@ service Minion {
 
 message Query {
     string db = 1;
-    string query = 2;
+    string namespace = 2;
+    string table = 3;
 }
 
 message Namespaces {
