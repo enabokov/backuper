@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 
 	"github.com/enabokov/backuper/internal/config"
 	"github.com/enabokov/backuper/internal/log"
@@ -16,6 +17,8 @@ func init() {
 }
 
 func main() {
+	runtime.GOMAXPROCS(1)
+
 	web.SetupHandlers()
 	log.Info.Println("Listening on ...", c.Port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil); err != nil {
