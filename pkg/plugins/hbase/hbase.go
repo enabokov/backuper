@@ -2,29 +2,17 @@ package hbase
 
 import (
 	"fmt"
-	"github.com/enabokov/backuper/internal/log"
 	"os"
 	"os/exec"
 	"regexp"
 	"time"
+
+	"github.com/enabokov/backuper/internal/log"
 )
 
-type Socket struct {
-	IP   string
-	Port string
-}
-
-func (s *Socket) GetHost() string {
-	return fmt.Sprintf("%s:%s", s.IP, s.Port)
-}
-
-type S3Options struct {
-	Region     string
-	BucketName string
-	Key        string
-}
-
 const uniqueKey = "managed-by-backuper"
+
+type HBase struct{}
 
 func createSnapshot(namespace string, tablename string) string {
 	if namespace == "" {
@@ -51,7 +39,7 @@ func createSnapshot(namespace string, tablename string) string {
 	return snapshotName
 }
 
-func CreateSnapshot(namespace string, tablename string) string {
+func (db *HBase) CreateSnapshot(namespace string, tablename string) string {
 	return createSnapshot(namespace, tablename)
 }
 
@@ -80,7 +68,7 @@ func deleteSnapshot(namespace, tablename, timestamp string) string {
 	return snapshotName
 }
 
-func DeleteSnapshot(namespace, tablename, timestamp string) string {
+func (db *HBase) DeleteSnapshot(namespace, tablename, timestamp string) string {
 	return deleteSnapshot(namespace, tablename, timestamp)
 }
 
@@ -99,7 +87,7 @@ func listSnapshots() []string {
 	return re.FindAllString(string(out), -1)
 }
 
-func ListSnapshots() []string {
+func (db *HBase) ListSnapshots() []string {
 	return listSnapshots()
 }
 
@@ -153,6 +141,19 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 	return snapshotname + "_table", nil
 }
 
-func CreateTableFromSnapshot(snapshotname string) (string, error) {
+func (db *HBase) CreateTableFromSnapshot(snapshotname string) (string, error) {
 	return createTableFromSnapshot(snapshotname)
+}
+
+func (db *HBase) GetNamespaces(socket interface{}) (names, sizes []string, checksums []float64) {
+	socket = socket.(Socket)
+	log.Error.Fatalln("not implemented")
+	return nil, nil, nil
+}
+
+func (db *HBase) CopyToS3Bucket(socket interface{}, src string, s3 interface{}) {
+	socket = socket.(Socket)
+	s3 = s3.(S3Options)
+
+	log.Error.Fatalln("not implemented")
 }

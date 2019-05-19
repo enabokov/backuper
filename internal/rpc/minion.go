@@ -13,9 +13,9 @@ import (
 	"github.com/enabokov/backuper/pkg/plugins/hbase"
 )
 
-type Minion struct{}
-
-var c config.Storage
+var (
+	c config.Storage
+)
 
 func init() {
 	c = config.InjectStorage
@@ -25,30 +25,33 @@ func (m *Minion) GetNamespaces(ctx context.Context, query *minion.Query) (*minio
 	log.Info.Println(query)
 
 	var (
+		// input
+		sock  interface{}
+		ctxDb StrategyCli
+
+		// output
 		dirNames []string
 		dirSizes []string
 		ok       []float64
 	)
 
-	conf := c.GetMinionConf()
-
 	switch query.Db {
 	case `hbase`:
-		sock := hbase.Socket{
+		conf := c.GetMinionConf()
+
+		sock = hbase.Socket{
 			IP:   conf.NameNode.Host,
 			Port: strconv.Itoa(conf.NameNode.Port),
 		}
 
-		dirNames, dirSizes, ok = hbase.GetNamespaces(sock)
+		ctxDb.setDatabase(&hbase.HBase{})
 		break
 	case `postgres`:
-		break
-	case `mongodb`:
-		break
-	case `cassandra`:
+		//ctxDb.setDatabase(&postgres.Postgres{})
 		break
 	}
 
+	dirNames, dirSizes, ok = ctxDb.getDatabase().GetNamespaces(sock)
 	return &minion.Namespaces{Names: dirNames, Sizes: dirSizes, Ok: ok}, nil
 }
 
@@ -60,41 +63,43 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.Query) (*minion.
 	log.Info.Println(query)
 
 	var (
-		msg string
-	)
+		// input
+		sock  interface{}
+		s3dst interface{}
+		ctxDb StrategyCli
 
-	conf := c.GetMinionConf()
+		// output
+		msg         string
+		srcFilename string
+	)
 
 	switch query.Db {
 	case `hbase`:
-		sock := hbase.Socket{
+		conf := c.GetMinionConf()
+
+		sock = hbase.Socket{
 			IP:   conf.NameNode.Host,
 			Port: strconv.Itoa(conf.NameNode.Port),
 		}
 
 		// TODO: add check in case sql injections
-		srcFilename := query.Query
+		srcFilename = query.Query
 
-		dst := hbase.S3Options{
+		s3dst = hbase.S3Options{
 			Region:     conf.Targets.S3.Bucket.Region,
 			BucketName: conf.Targets.S3.Bucket.Name,
 			Key:        filepath.Join(`backup_hbase`, service.GetPrivateIP()),
 		}
 
-		go hbase.CopyToS3Bucket(sock, srcFilename, dst)
-		msg = fmt.Sprintf("Backup %s -> %s", srcFilename, filepath.Join(dst.BucketName, dst.Key))
+		ctxDb.setDatabase(&hbase.HBase{})
 		break
 	case `postgres`:
-		msg = "Not implemented yet"
-		break
-	case `mongodb`:
-		msg = "Not implemented yet"
-		break
-	case `cassandra`:
-		msg = "Not implemented yet"
+		//ctxDb.setDatabase(&postgres.Postgres{})
 		break
 	}
 
+	go ctxDb.getDatabase().CopyToS3Bucket(sock, srcFilename, s3dst)
+	msg = fmt.Sprintf("Backup %s -> %s", srcFilename, s3dst)
 	return &minion.Response{Msg: msg}, nil
 }
 
