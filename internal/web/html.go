@@ -10,6 +10,15 @@ import (
 	"github.com/enabokov/backuper/internal/log"
 )
 
+func escapeForms(r *http.Request, params ...string) (map[string]string, error) {
+	dict := make(map[string]string)
+	for _, param := range params {
+		dict[param] = r.FormValue(param)
+	}
+
+	return dict, nil
+}
+
 func escapeParams(r *http.Request, params ...string) (map[string]string, error) {
 	dict := make(map[string]string)
 
@@ -37,6 +46,6 @@ func render(w http.ResponseWriter, ctx interface{}, page string) {
 			append([]string{wd + "/web/template/base.html"}, filepath.Join(wd+"/web/template/", page))...))
 
 	if err := tmpl.Execute(w, ctx); err != nil {
-		log.Error.Fatalln(err)
+		log.Error.Println(err)
 	}
 }

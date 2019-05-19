@@ -2,6 +2,7 @@ package main
 
 import (
 	"google.golang.org/grpc"
+	"runtime"
 
 	"github.com/enabokov/backuper/internal/config"
 	"github.com/enabokov/backuper/internal/proto/master"
@@ -16,6 +17,8 @@ func init() {
 }
 
 func main() {
+	runtime.GOMAXPROCS(1)
+
 	server := grpc.NewServer()
 	master.RegisterMasterServer(server, &rpc.Master{})
 

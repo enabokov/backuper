@@ -9,16 +9,16 @@ service Master {
 
 message MinionInfo {
     string host = 1;
+    string localTime = 2;
 }
 
 message Response {
     string msg = 1;
 }
 
-message Query {
-    string query = 1;
-}
+message Query {}
 
 message ListMinions{
     repeated string host = 1;
+    repeated string time = 2;
 }
