@@ -21,11 +21,14 @@ type HTMLContext map[string]interface{}
 var c config.Storage
 var connPool *pool.Storage
 var minions map[string]string
+var minionsTime map[string]string
 
 func init() {
 	c = config.InjectStorage
 	connPool = pool.GetPool()
+
 	minions = make(map[string]string)
+	minionsTime = make(map[string]string)
 }
 
 func getIndexPage(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +37,7 @@ func getIndexPage(w http.ResponseWriter, r *http.Request) {
 	conf := c.GetDashboardConf()
 	conn := connPool.GRPCConnect(r.Context(), conf.Master.Host, conf.Master.Port, grpc.WithInsecure())
 	client := master.NewMasterClient(conn)
-	msg, err := client.GetAllMinions(context.Background(), &master.Query{Query: "get all minions"})
+	msg, err := client.GetAllMinions(context.Background(), &master.Query{})
 	if err != nil {
 		log.Error.Println(err)
 		return
@@ -42,15 +45,18 @@ func getIndexPage(w http.ResponseWriter, r *http.Request) {
 
 	connPool.GRPCDisconnect(conn)
 
-	for _, host := range msg.Host {
-		_tmp := strings.Split(host, ":")
-		ip := _tmp[0]
-		port := _tmp[1]
+	for i, host := range msg.Host {
+		parts := strings.Split(host, ":")
+		ip := parts[0]
+		port := parts[1]
 
 		minions[ip] = port
+		minionsTime[ip] = msg.Time[i]
 	}
+
 	ctx := HTMLContext{
-		"Minions": minions,
+		"Minions":     minions,
+		"MinionsTime": minionsTime,
 	}
 
 	render(w, ctx, "index.html")
@@ -74,7 +80,50 @@ func backupStart(w http.ResponseWriter, r *http.Request) {
 	log.Info.Printf("Start backup %s, %s, %d", params["table"], params["host"], port)
 	conn := connPool.GRPCConnect(r.Context(), params["host"], port, grpc.WithInsecure())
 	client := minion.NewMinionClient(conn)
-	msg, err := client.StartBackup(context.Background(), &minion.Query{Db: params["db"], Namespace: params["namespace"], Table: params["table"]})
+	msg, err := client.StartBackup(context.Background(), &minion.QueryStartBackup{Db: params["db"], Namespace: params["namespace"], Table: params["table"]})
+	if err != nil {
+		log.Error.Println(err)
+		return
+	}
+	connPool.GRPCDisconnect(conn)
+
+	config.Cache.Set(`alerts`, msg.Msg, 1*time.Minute)
+
+	redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%d", params["db"], params["host"], port)
+	http.Redirect(w, r, redirectUrl, 302)
+}
+
+func backupSchedule(w http.ResponseWriter, r *http.Request) {
+	params, err := escapeParams(r, "host", "port", "db", "table", "namespace")
+	if err != nil {
+		log.Error.Println(err)
+		http.Redirect(w, r, "/400", http.StatusFound)
+		return
+	}
+	port, err := strconv.Atoi(params["port"])
+	if err != nil {
+		log.Error.Println(err)
+	}
+
+	if r.Method != http.MethodPost {
+		redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%d", params["db"], params["host"], port)
+		http.Redirect(w, r, redirectUrl, 302)
+	}
+
+	forms, _ := escapeForms(r, "schedule-time", "schedule-daily", "schedule-weekly", "schedule-monthly")
+
+	conn := connPool.GRPCConnect(r.Context(), params["host"], port, grpc.WithInsecure())
+	client := minion.NewMinionClient(conn)
+	msg, err := client.ScheduleBackup(
+		context.Background(),
+		&minion.QueryScheduleBackup{
+			Db:        params["db"],
+			Namespace: params["namespace"],
+			Table:     params["table"],
+			Timestamp: forms["schedule-time"],
+		},
+	)
+
 	if err != nil {
 		log.Error.Println(err)
 		return
@@ -111,7 +160,7 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 
 	_tablesFromCache, ok := config.Cache.Get(params[`db`] + `:tables`)
 	if !ok {
-		tables, err := client.GetTables(context.Background(), &minion.Query{Db: params[`db`], Namespace: "", Table: ""})
+		tables, err := client.GetTables(context.Background(), &minion.QueryGetTables{Db: params[`db`]})
 		if err != nil {
 			log.Error.Println(err)
 			return
@@ -160,16 +209,13 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 	connPool.GRPCDisconnect(conn)
 
 	_Alerts, ok := config.Cache.Get(`alerts`)
-	if !ok {
-		log.Warn.Println("No alerts")
-	}
-
 	if _Alerts != nil {
 		alerts = append(alerts, _Alerts.(string))
 	}
 
 	ctx := HTMLContext{
 		"Db":     params["db"],
+		"Time":   minionsTime[params["host"]],
 		"Host":   params["host"],
 		"Port":   params["port"],
 		"Alerts": alerts,
@@ -194,6 +240,7 @@ func errorNotFound(w http.ResponseWriter, r *http.Request) {
 func SetupHandlers() {
 	http.HandleFunc("/", getIndexPage)
 	http.HandleFunc("/start", backupStart)
+	http.HandleFunc("/schedule", backupSchedule)
 	http.HandleFunc("/progress", backupProgress)
 
 	// error handlers

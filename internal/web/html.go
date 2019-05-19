@@ -10,6 +10,15 @@ import (
 	"github.com/enabokov/backuper/internal/log"
 )
 
+func escapeForms(r *http.Request, params ...string) (map[string]string, error) {
+	dict := make(map[string]string)
+	for _, param := range params {
+		dict[param] = r.FormValue(param)
+	}
+
+	return dict, nil
+}
+
 func escapeParams(r *http.Request, params ...string) (map[string]string, error) {
 	dict := make(map[string]string)
 
