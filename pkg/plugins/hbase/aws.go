@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/enabokov/backuper/internal/log"
 	"github.com/enabokov/backuper/pkg/plugins/globals"
@@ -54,9 +55,11 @@ func calcLocalChecksum(client *hdfs.Client, filename string) string {
 }
 
 func uploadSnapshotToS3(snapshotname string, options globals.S3Options) bool {
-	key := filepath.Join(options.BucketName, options.Key, snapshotname)
+	var t = time.Now()
+
+	key := filepath.Join(options.BucketName, options.Key, t.Format("2006-01-02"), snapshotname)
 	log.Info.Printf("Start uploading %s to S3 %s\n", snapshotname, key)
-	out, err := exec.Command(
+	_, err := exec.Command(
 		"hbase",
 		"org.apache.hadoop.hbase.snapshot.ExportSnapshot",
 		fmt.Sprintf("-snapshot %s", snapshotname),
@@ -67,7 +70,6 @@ func uploadSnapshotToS3(snapshotname string, options globals.S3Options) bool {
 	}
 
 	log.Info.Printf("Finish uploading %s to S3 %s\n", snapshotname, key)
-	log.Info.Println(string(out))
 	return true
 }
 
