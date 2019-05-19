@@ -54,15 +54,15 @@ func calcLocalChecksum(client *hdfs.Client, filename string) string {
 	return fmt.Sprintf("%x", md5.Sum(contents))
 }
 
-func uploadSnapshotToS3(snapshotname string, options globals.S3Options) bool {
+func uploadSnapshotToS3(snapshotname *string, options *globals.S3Options) bool {
 	var t = time.Now()
 
-	key := filepath.Join(options.BucketName, options.Key, t.Format("2006-01-02"), snapshotname)
-	log.Info.Printf("Start uploading %s to S3 %s\n", snapshotname, key)
+	key := filepath.Join(options.BucketName, options.Key, t.Format("2006-01-02"), *snapshotname)
+	log.Info.Printf("Start uploading %s to S3 %s\n", *snapshotname, key)
 	_, err := exec.Command(
 		"hbase",
 		"org.apache.hadoop.hbase.snapshot.ExportSnapshot",
-		fmt.Sprintf("-snapshot %s", snapshotname),
+		fmt.Sprintf("-snapshot %s", *snapshotname),
 		fmt.Sprintf("-copy-to s3a://%s", key)).Output()
 	if err != nil {
 		log.Error.Println(err)

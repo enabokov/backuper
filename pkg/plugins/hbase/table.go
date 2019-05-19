@@ -3,14 +3,12 @@ package hbase
 import (
 	"bufio"
 	"fmt"
+	"github.com/enabokov/backuper/internal/log"
+	"github.com/enabokov/backuper/pkg/plugins/globals"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
-	"time"
-
-	"github.com/enabokov/backuper/internal/log"
-	"github.com/enabokov/backuper/pkg/plugins/globals"
 )
 
 func writeAndGetTmpFile(cmds []string) (filename string) {
@@ -63,31 +61,6 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 	return snapshotname + "_table", nil
 }
 
-func createSnapshotFromTable(namespace string, tablename string) string {
-	if namespace == "none" {
-		namespace = "non"
-	}
-
-	var (
-		t            = time.Now()
-		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s-%s", namespace, tablename, uniqueKey, t.Format("2006-01-02-15-04-05"))
-	)
-
-	log.Info.Println("Create snapshot", snapshotName)
-	out, err := exec.Command(
-		"hbase",
-		"org.apache.hadoop.hbase.snapshot.CreateSnapshot",
-		fmt.Sprintf("--table %s", tablename),
-		fmt.Sprintf("--name %s", snapshotName)).Output()
-	if err != nil {
-		log.Error.Println(err)
-		return ""
-	}
-	log.Info.Println("Done: snapshot", snapshotName)
-	log.Info.Println(string(out))
-	return snapshotName
-}
-
 func getTables(socket globals.Socket) (tables []string) {
 	cmds := []string{`list`}
 	tmpFilename := writeAndGetTmpFile(cmds)
@@ -118,11 +91,11 @@ func getTables(socket globals.Socket) (tables []string) {
 	return tables
 }
 
-func backupTableToS3(socket globals.Socket, namespace string, table string, options globals.S3Options) {
+func backupTableToS3(socket globals.Socket, namespace *string, table *string, options *globals.S3Options) {
 	snapshotname := createSnapshotFromTable(namespace, table)
-	ok := uploadSnapshotToS3(snapshotname, options)
+	ok := uploadSnapshotToS3(&snapshotname, options)
 	if !ok {
 		log.Error.Printf("failed to upload snapshot %s\n", snapshotname)
 	}
-	deleteSnapshot(snapshotname)
+	deleteSnapshot(&snapshotname)
 }

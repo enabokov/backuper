@@ -20,6 +20,17 @@ func (db *HBase) GetTables(socket interface{}) []string {
 	return getTables(socket.(globals.Socket))
 }
 
+func (db *HBase) BackupSchedule(socket interface{}, namespace, tablename, timestamp string, s3 interface{}) {
+	s3a := s3.(globals.S3Options)
+	backupSchedule(socket.(globals.Socket), &namespace, &tablename, &timestamp, &s3a)
+}
+
+func (db *HBase) BackupUnschedule(socket interface{}, namespace, tablename, timestamp string, s3 interface{}) {
+	s3a := s3.(globals.S3Options)
+	backupSchedule(socket.(globals.Socket), &namespace, &tablename, &timestamp, &s3a)
+}
+
 func (db *HBase) BackupTableToS3(socket interface{}, namespace, tablename string, s3 interface{}) {
-	backupTableToS3(socket.(globals.Socket), namespace, tablename, s3.(globals.S3Options))
+	s3a := s3.(globals.S3Options)
+	backupTableToS3(socket.(globals.Socket), &namespace, &tablename, &s3a)
 }
