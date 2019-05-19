@@ -23,7 +23,7 @@ func init() {
 	c = config.InjectStorage
 }
 
-func (m *Minion) GetNamespaces(ctx context.Context, query *minion.Query) (*minion.Namespaces, error) {
+func (m *Minion) GetNamespaces(ctx context.Context, query *minion.QueryGetNamespaces) (*minion.Namespaces, error) {
 	log.Info.Println(query)
 
 	var (
@@ -63,7 +63,7 @@ func (m *Minion) GetNamespaces(ctx context.Context, query *minion.Query) (*minio
 	return &minion.Namespaces{Names: dirNames, Sizes: dirSizes, Ok: ok}, nil
 }
 
-func (m *Minion) GetTables(ctx context.Context, query *minion.Query) (*minion.Tables, error) {
+func (m *Minion) GetTables(ctx context.Context, query *minion.QueryGetTables) (*minion.Tables, error) {
 	log.Info.Println(query)
 
 	var (
@@ -101,7 +101,7 @@ func (m *Minion) GetTables(ctx context.Context, query *minion.Query) (*minion.Ta
 	return &minion.Tables{Tables: tables}, nil
 }
 
-func (m *Minion) StartBackup(ctx context.Context, query *minion.Query) (*minion.Response, error) {
+func (m *Minion) StartBackup(ctx context.Context, query *minion.QueryStartBackup) (*minion.Response, error) {
 	log.Info.Println(query)
 
 	var (
@@ -153,6 +153,60 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.Query) (*minion.
 	return &minion.Response{Msg: msg}, nil
 }
 
-func (m *Minion) StopBackup(ctx context.Context, query *minion.Query) (*minion.Response, error) {
+func (m *Minion) ScheduleBackup(ctx context.Context, query *minion.QueryScheduleBackup) (*minion.Response, error) {
+	log.Info.Println(query)
+
+	var (
+		// input
+		sock  interface{}
+		s3dst interface{}
+		ctxDb StrategyCli
+
+		// output
+		msg       string
+		namespace string
+		tablename string
+		timestamp string
+	)
+
+	switch query.Db {
+	case `hbase`:
+		conf := c.GetMinionConf()
+
+		sock = globals.Socket{
+			IP:   conf.NameNode.Host,
+			Port: strconv.Itoa(conf.NameNode.Port),
+		}
+
+		namespace = query.Namespace
+		tablename = query.Table
+		timestamp = query.Timestamp
+
+		s3dst = globals.S3Options{
+			Region:     conf.Targets.S3.Bucket.Region,
+			BucketName: conf.Targets.S3.Bucket.Name,
+			Key:        filepath.Join(`backup_hbase`, service.GetPrivateIP()),
+		}
+
+		ctxDb.setDatabase(&hbase.HBase{})
+		break
+	case `postgres`:
+		conf := c.GetMinionConf()
+		s3dst = globals.S3Options{
+			Region:     conf.Targets.S3.Bucket.Region,
+			BucketName: conf.Targets.S3.Bucket.Name,
+			Key:        filepath.Join(`backup_postgres`, service.GetPrivateIP()),
+		}
+
+		ctxDb.setDatabase(&postgres.Postgres{})
+		break
+	}
+
+	ctxDb.getDatabase().BackupSchedule(sock, namespace, tablename, timestamp, s3dst)
+	msg = fmt.Sprintf("Scheduled backup %s:%s every %s", query.Namespace, query.Table, timestamp)
+	return &minion.Response{Msg: msg}, nil
+}
+
+func (m *Minion) UnscheduleBackup(ctx context.Context, query *minion.QueryScheduleBackup) (*minion.Response, error) {
 	return &minion.Response{Msg: query.Namespace + " backup stopped"}, nil
 }
