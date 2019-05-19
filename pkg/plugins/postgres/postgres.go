@@ -22,6 +22,12 @@ func (db *Postgres) GetTables(socket interface{}) []string {
 	return nil
 }
 
+func (db *Postgres) BackupSchedule(socket interface{}, namespace, tablename, timestamp string, s3 interface{}) {
+	socket = socket.(globals.Socket)
+	s3 = s3.(globals.S3Options)
+	log.Error.Fatalln("not implemented")
+}
+
 func (db *Postgres) BackupTableToS3(socket interface{}, namespace, tablename string, s3 interface{}) {
 	socket = socket.(globals.Socket)
 	s3 = s3.(globals.S3Options)
