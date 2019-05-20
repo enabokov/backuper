@@ -100,13 +100,13 @@
 \newcommand{\uchapter}[1]{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}
 
 % для створення вступу використаємо команду \uchapter
-\newcommand{\intro}{\uchapter{Вступ}}
+\newcommand{\intro}{\uchapter{ВСТУП}}
 
 % для створення висновків використаємо команду \uchapter
-\newcommand{\conclusions}{\uchapter{Висновки}}
+\newcommand{\conclusions}{\uchapter{ВИСНОВКИ}}
 
 % для створення переліку умовних позначень використаємо команду \shortings
-\newcommand{\shortings}{\uchapter{Перелік умовних позначень, скорочень і термінів}}
+\newcommand{\shortings}{\uchapter{ПЕРЕЛІК УМОВНИХ ПОЗНАЧЕНЬ, СИМВОЛІВ, ОДИНИЦЬ, СКОРОЧЕНЬ І ТЕРМІНІВ}}
 
 % хитра команда для створення додатків
 \newcounter{appendnum}
@@ -152,15 +152,15 @@
 
 % тепер --- для підрозділу
 \titleformat{\section}[block] % указуємо, що модифікуємо саме підрозділ
-			{\small} % указуємо формат назви (жирний)
-			{\hspace{1.5em}\bfseries\thesection} % указуємо формат власне номера: це буде просто число, без крапки
+			{\normalsize} % указуємо формат назви (жирний)
+			{\hspace{1.5em}\thesection} % указуємо формат власне номера: це буде просто число, без крапки
 			{0.5em} % відстань між номером і назвою
-			{\bfseries} % текст, що передує назві
+			{\textmd} % текст, що передує назві
 
 % тепер --- для підрозділу ще нижчого рівня
 \titleformat{\subsection}[block] % указуємо, що модифікуємо саме підрозділ нижнього рівня
-			{\small\itshape} % указуємо формат назви (жирний)
-			{\hspace{1.5em}\bfseries\thesubsection} % указуємо формат власне номера: це буде просто число, без крапки
+			{\normalsize} % указуємо формат назви (жирний)
+			{\hspace{1.5em}\thesubsection} % указуємо формат власне номера: це буде просто число, без крапки
 			{0.5em} % відстань між номером і назвою
 			{\textmd} % текст, що передує назві
 
@@ -324,7 +324,7 @@
 	\setlength\parsep{0pt}
 	\setlength\topsep{0pt}
 	\setlength\itemsep{0pt}
-	\addcontentsline{toc}{chapter}{Перелік посилань}% додаємо в зміст
+	\addcontentsline{toc}{chapter}{ПРЕЛІК ПОСИЛАНЬ}% додаємо в зміст
 	}
 	{
 	\tempbibend
