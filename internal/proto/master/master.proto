@@ -4,21 +4,83 @@ package master;
 
 service Master {
     rpc Heartbeat(MinionInfo) returns (Response) {}
+
     rpc GetAllMinions(Query) returns (ListMinions) {}
+    rpc GetTablesByMinion(QueryTablesByMinion) returns (ListTableResponse) {}
+    rpc GetBackupsByMinion(QueryBackupsByMinion) returns (ListBackupResponse) {}
+
+    rpc UpdateInfoBackup(QueryBackupUnit) returns (Response) {}
+    rpc InstantBackupByMinion(QueryBackup) returns (Response) {}
+    rpc ScheduleBackupByMinion(QueryBackup) returns (Response) {}
+}
+
+message Query {}
+
+message QueryTablesByMinion {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+}
+
+message QueryBackupsByMinion {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+}
+
+message QueryBackup {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+    string namespace = 4;
+    string table = 5;
+    string timestamp = 6;
+}
+
+message QueryBackupUnit {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+    BackupUnit unit = 4;
 }
 
 message MinionInfo {
     string host = 1;
+    string localTime = 2;
 }
 
 message Response {
     string msg = 1;
+    string timestamp = 2;
 }
 
-message Query {
-    string query = 1;
+message ListTableResponse {
+    message TableUnit {
+        string Namespace = 1;
+        string Name = 2;
+        string LastBackup = 3;
+        string ScheduledAt = 4;
+    }
+
+    repeated TableUnit tables = 1;
+}
+
+message BackupUnit {
+    string Namespace = 1;
+    string Table = 2;
+    string Timestamp = 3;
+}
+
+message ListBackupResponse {
+    repeated BackupUnit backups = 1;
 }
 
 message ListMinions{
-    repeated string host = 1;
+    message MinionUnit {
+        string host = 1;
+        string time = 2;
+        bool isActive = 3;
+    }
+
+    repeated MinionUnit unit = 1;
 }

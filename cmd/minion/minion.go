@@ -1,13 +1,13 @@
 package main
 
 import (
-	"google.golang.org/grpc"
-
 	"github.com/enabokov/backuper/internal/config"
 	"github.com/enabokov/backuper/internal/jobs"
 	"github.com/enabokov/backuper/internal/proto/minion"
 	"github.com/enabokov/backuper/internal/rpc"
 	"github.com/enabokov/backuper/internal/service"
+	"google.golang.org/grpc"
+	"runtime"
 )
 
 var c config.ConfMinion
@@ -20,6 +20,8 @@ func init() {
 }
 
 func main() {
+	runtime.GOMAXPROCS(1)
+
 	server := grpc.NewServer()
 	minion.RegisterMinionServer(server, &rpc.Minion{})
 

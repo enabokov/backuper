@@ -3,8 +3,9 @@ package pool
 import (
 	"context"
 	"fmt"
-	"github.com/enabokov/backuper/internal/log"
 	"google.golang.org/grpc"
+
+	"github.com/enabokov/backuper/internal/log"
 )
 
 type Storage struct {

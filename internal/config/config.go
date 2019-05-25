@@ -1,8 +1,10 @@
 package config
 
 import (
+	"github.com/patrickmn/go-cache"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"time"
 
 	"github.com/enabokov/backuper/internal/log"
 )
@@ -87,6 +89,8 @@ func (i *Storage) Put(filename, injectName string, out interface{}) {
 
 	i.Configs[injectName] = out
 }
+
+var Cache = cache.New(1*time.Minute, 1*time.Minute)
 
 func init() {
 	InjectStorage = Storage{}
