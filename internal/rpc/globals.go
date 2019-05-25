@@ -3,9 +3,9 @@ package rpc
 type Minion struct{}
 
 type TableUnit struct {
-	Name string
+	Name       string
 	LastBackup string
-	Namespace string
+	Namespace  string
 }
 
 type Database interface {

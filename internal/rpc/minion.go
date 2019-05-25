@@ -76,9 +76,9 @@ func (m *Minion) GetTables(ctx context.Context, query *minion.QueryGetTables) (*
 		ctxDb StrategyCli
 
 		// output
-		tables []*minion.Tables_TableUnit
-		namespace string
-		tablename string
+		tables     []*minion.Tables_TableUnit
+		namespace  string
+		tablename  string
 		lastbackup string
 	)
 
@@ -121,8 +121,8 @@ func (m *Minion) GetTables(ctx context.Context, query *minion.QueryGetTables) (*
 
 		tables = append(tables,
 			&minion.Tables_TableUnit{
-				Name: tablename,
-				Namespace: namespace,
+				Name:       tablename,
+				Namespace:  namespace,
 				LastBackup: lastbackup,
 			})
 	}

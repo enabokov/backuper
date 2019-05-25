@@ -184,9 +184,9 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 	if true {
 		tables, err := client.GetTablesByMinion(context.Background(),
 			&master.QueryTablesByMinion{
-				MinionIP: params[`host`],
+				MinionIP:   params[`host`],
 				MinionPort: int64(port),
-				Db: params[`db`],
+				Db:         params[`db`],
 			})
 
 		if err != nil {
@@ -199,8 +199,8 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 			_tmpTables = append(
 				_tmpTables,
 				map[string]string{
-					`namespace`: tb.Namespace,
-					`tablename`: tb.Name,
+					`namespace`:  tb.Namespace,
+					`tablename`:  tb.Name,
 					`lastbackup`: tb.LastBackup,
 				},
 			)

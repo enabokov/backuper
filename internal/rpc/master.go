@@ -100,8 +100,8 @@ func (s *Master) GetTablesByMinion(ctx context.Context, query *master.QueryTable
 	for _, tb := range resp.Tables {
 		tables = append(tables,
 			&master.ListTableResponse_TableUnit{
-				Namespace: tb.Namespace,
-				Name: tb.Name,
+				Namespace:  tb.Namespace,
+				Name:       tb.Name,
 				LastBackup: findLastBackup(query.MinionIP, int(query.MinionPort), query.Db, tb.Namespace, tb.Name),
 			},
 		)
