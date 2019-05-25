@@ -2,15 +2,18 @@ package hbase
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 
 	"github.com/enabokov/backuper/internal/log"
 )
 
 func listSnapshots() []string {
+	name := filepath.Join(os.Getenv(`PATH_HBASE`), `hbase`)
 	out, err := exec.Command(
-		"hbase",
+		name,
 		"org.apache.hadoop.hbase.snapshot.SnapshotInfo",
 		"-list-snapshots",
 	).Output()
@@ -24,11 +27,18 @@ func listSnapshots() []string {
 }
 
 func createSnapshotFromTable(namespace, tablename *string) string {
-	var snapshotName = fmt.Sprintf("%s-%s-snapshot-%s", *namespace, *tablename, uniqueKey)
+	var snapshotName string
 
+	if snapshotName == `-` {
+		snapshotName = fmt.Sprintf("%s-snapshot-%s", *tablename, uniqueKey)
+	} else {
+		snapshotName = fmt.Sprintf("%s-%s-snapshot-%s", *namespace, *tablename, uniqueKey)
+	}
+
+	name := filepath.Join(os.Getenv(`PATH_HBASE`), `hbase`)
 	log.Info.Printf("create snapshot %s from %s\n", snapshotName, *tablename)
 	_, err := exec.Command(
-		"hbase",
+		name,
 		"org.apache.hadoop.hbase.snapshot.CreateSnapshot",
 		fmt.Sprintf("--table %s", *tablename),
 		fmt.Sprintf("--name %s", snapshotName)).Output()
@@ -47,9 +57,10 @@ func deleteSnapshot(snapshotname *string) {
 
 	tmpFilename := writeAndGetTmpFile(cmds)
 
+	name := filepath.Join(os.Getenv(`PATH_HBASE`), `hbase`)
 	log.Info.Printf("delete snapshot %s\n", *snapshotname)
 	_, err := exec.Command(
-		"hbase",
+		name,
 		"shell",
 		tmpFilename,
 	).Output()

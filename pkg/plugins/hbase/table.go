@@ -2,11 +2,18 @@ package hbase
 
 import (
 	"bufio"
+	"context"
 	"fmt"
+	"github.com/enabokov/backuper/internal/config"
+	"github.com/enabokov/backuper/internal/proto/master"
+	"github.com/enabokov/backuper/internal/service"
+	"google.golang.org/grpc"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/enabokov/backuper/internal/log"
 	"github.com/enabokov/backuper/pkg/plugins/globals"
@@ -47,9 +54,10 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 	}
 	tmpFilename := writeAndGetTmpFile(cmds)
 
+	name := filepath.Join(os.Getenv(`PATH_HBASE`), `hbase`)
 	log.Info.Println("create table from snapshot", snapshotname)
 	_, err := exec.Command(
-		"hbase",
+		name,
 		"shell",
 		tmpFilename,
 	).Output()
@@ -66,9 +74,15 @@ func getTables(socket globals.Socket) (tables []string) {
 	cmds := []string{`list`}
 	tmpFilename := writeAndGetTmpFile(cmds)
 
+	var (
+		out []byte
+		err error
+	)
+
+	name := filepath.Join(os.Getenv(`PATH_HBASE`), `hbase`)
 	log.Info.Println("get list tables' names from hbase")
-	out, err := exec.Command(
-		"hbase",
+	out, err = exec.Command(
+		name,
 		"shell",
 		tmpFilename,
 	).Output()
@@ -111,7 +125,49 @@ func backupInstant(socket globals.Socket, namespace *string, table *string, opti
 
 	if ok := uploadSnapshotToS3(&snapshotname, options); !ok {
 		log.Error.Printf("failed to upload snapshot %s\n", snapshotname)
+		return
 	}
 
 	deleteSnapshot(&snapshotname)
+	updateMasterBackupList(*namespace, *table)
+}
+
+func updateMasterBackupList(namespace, tablename string) {
+	c := config.InjectStorage
+	minionConf := c.GetMinionConf()
+
+	target := fmt.Sprintf("%s:%d", minionConf.Master.Host, minionConf.Master.Port)
+	conn, err := grpc.DialContext(context.Background(), target, grpc.WithInsecure())
+	if err != nil {
+		log.Info.Println("failed to update master backups", err)
+		return
+	}
+
+	localIP := service.GetPrivateIP()
+	if localIP == "" {
+		log.Info.Println("failed to update master backups", err)
+		return
+	}
+
+	client := master.NewMasterClient(conn)
+	resp, err := client.UpdateInfoBackup(
+		context.Background(),
+		&master.QueryBackupUnit{
+			MinionIP:   localIP,
+			MinionPort: int64(minionConf.Port),
+			Db:         `hbase`,
+			Unit: &master.BackupUnit{
+				Namespace: namespace,
+				Table:     tablename,
+				Timestamp: time.Now().Format(time.RFC850),
+			},
+		},
+	)
+
+	if err != nil {
+		log.Error.Println(err)
+		return
+	}
+
+	log.Info.Println(resp.Msg)
 }
