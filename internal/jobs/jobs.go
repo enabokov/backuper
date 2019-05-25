@@ -33,17 +33,12 @@ func heartbeat(masterHost string, masterPort int, port int) {
 	}
 
 	host := fmt.Sprintf("%s:%d", privateIP, port)
-
-	t := time.Now()
-	zone, _ := t.Zone()
-	timestamp := fmt.Sprintf("%d:%d %s", t.Hour(), t.Minute(), zone)
-
 	client := master.NewMasterClient(conn)
 	msg, err := client.Heartbeat(
 		context.Background(),
 		&master.MinionInfo{
 			Host:      host,
-			LocalTime: timestamp,
+			LocalTime: time.Now().Format(time.RFC850),
 		},
 	)
 
@@ -112,4 +107,21 @@ func UnScheduleBackup(db, namespace, table, timestamp string) {
 	hasher.Write([]byte(timestamp))
 	task = tasks[hex.EncodeToString(hasher.Sum(nil))]
 	gocron.Remove(task)
+}
+
+func collect(name *string, timestamp *uint64, infoFunc func()) bool {
+	gocron.Every(*timestamp).Minutes().Do(infoFunc)
+
+	hasher := md5.New()
+	hasher.Write([]byte(*name))
+	tasks[hex.EncodeToString(hasher.Sum(nil))] = &infoFunc
+	go func() {
+		<-gocron.Start()
+	}()
+
+	return true
+}
+
+func Collect(name *string, timestamp *uint64, infoFunc func()) bool {
+	return collect(name, timestamp, infoFunc)
 }
