@@ -69,7 +69,7 @@ func uploadSnapshotToS3(snapshotname *string, options *globals.S3Options) bool {
 		return false
 	}
 
-	log.Info.Printf("Finish uploading %s to S3 %s\n", snapshotname, key)
+	log.Info.Printf("Finish uploading %s to S3 %s\n", *snapshotname, key)
 	return true
 }
 
