@@ -25,12 +25,12 @@ func (db *HBase) BackupSchedule(socket interface{}, namespace, tablename, timest
 	backupSchedule(socket.(globals.Socket), &namespace, &tablename, &timestamp, &s3a)
 }
 
+func (db *HBase) BackupInstant(socket interface{}, namespace, tablename string, s3 interface{}) {
+	s3a := s3.(globals.S3Options)
+	backupInstant(socket.(globals.Socket), &namespace, &tablename, &s3a)
+}
+
 func (db *HBase) BackupUnschedule(socket interface{}, namespace, tablename, timestamp string, s3 interface{}) {
 	s3a := s3.(globals.S3Options)
 	backupSchedule(socket.(globals.Socket), &namespace, &tablename, &timestamp, &s3a)
-}
-
-func (db *HBase) BackupTableToS3(socket interface{}, namespace, tablename string, s3 interface{}) {
-	s3a := s3.(globals.S3Options)
-	backupTableToS3(socket.(globals.Socket), &namespace, &tablename, &s3a)
 }

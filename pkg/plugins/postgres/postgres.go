@@ -28,7 +28,7 @@ func (db *Postgres) BackupSchedule(socket interface{}, namespace, tablename, tim
 	log.Error.Fatalln("not implemented")
 }
 
-func (db *Postgres) BackupTableToS3(socket interface{}, namespace, tablename string, s3 interface{}) {
+func (db *Postgres) BackupInstant(socket interface{}, namespace, tablename string, s3 interface{}) {
 	socket = socket.(globals.Socket)
 	s3 = s3.(globals.S3Options)
 	log.Error.Fatalln("not implemented")

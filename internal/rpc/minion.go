@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/enabokov/backuper/internal/config"
 	"github.com/enabokov/backuper/internal/log"
@@ -18,6 +20,8 @@ import (
 var (
 	c config.Storage
 )
+
+const timeFormat = `Mon Jan _2 15:04:05 2006`
 
 func init() {
 	c = config.InjectStorage
@@ -72,7 +76,10 @@ func (m *Minion) GetTables(ctx context.Context, query *minion.QueryGetTables) (*
 		ctxDb StrategyCli
 
 		// output
-		tables []string
+		tables     []*minion.Tables_TableUnit
+		namespace  string
+		tablename  string
+		lastbackup string
 	)
 
 	switch query.Db {
@@ -97,8 +104,34 @@ func (m *Minion) GetTables(ctx context.Context, query *minion.QueryGetTables) (*
 		break
 	}
 
-	tables = ctxDb.getDatabase().GetTables(sock)
+	tablesList := ctxDb.getDatabase().GetTables(sock)
+	for _, tb := range tablesList {
+		if !strings.Contains(tb, ":") {
+			tablename = tb
+		} else {
+			parts := strings.Split(tb, ":")
+			if len(parts) > 1 {
+				namespace = parts[0]
+				tablename = parts[1]
+			} else {
+				namespace = "none"
+				tablename = parts[0]
+			}
+		}
+
+		tables = append(tables,
+			&minion.Tables_TableUnit{
+				Name:       tablename,
+				Namespace:  namespace,
+				LastBackup: lastbackup,
+			})
+	}
+
 	return &minion.Tables{Tables: tables}, nil
+}
+
+func (m *Minion) GetBackups(ctx context.Context, query *minion.QueryDatabase) (*minion.Backups, error) {
+	return &minion.Backups{Backups: []string{}}, nil
 }
 
 func (m *Minion) StartBackup(ctx context.Context, query *minion.QueryStartBackup) (*minion.Response, error) {
@@ -114,6 +147,7 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.QueryStartBackup
 		msg       string
 		namespace string
 		tablename string
+		timestamp string
 	)
 
 	switch query.Db {
@@ -148,9 +182,11 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.QueryStartBackup
 		break
 	}
 
-	go ctxDb.getDatabase().BackupTableToS3(sock, namespace, tablename, s3dst)
-	msg = fmt.Sprintf("Backup %s %s -> %s", namespace, tablename, s3dst.(globals.S3Options).BucketName)
-	return &minion.Response{Msg: msg}, nil
+	go ctxDb.getDatabase().BackupInstant(sock, namespace, tablename, s3dst)
+
+	timestamp = time.Now().Format(timeFormat)
+	msg = fmt.Sprintf("Backup %s %s -> %s at %s", namespace, tablename, s3dst.(globals.S3Options).BucketName, timestamp)
+	return &minion.Response{Msg: msg, Timestamp: timestamp}, nil
 }
 
 func (m *Minion) ScheduleBackup(ctx context.Context, query *minion.QueryScheduleBackup) (*minion.Response, error) {
@@ -166,6 +202,7 @@ func (m *Minion) ScheduleBackup(ctx context.Context, query *minion.QuerySchedule
 		msg       string
 		namespace string
 		tablename string
+		date      string
 		timestamp string
 	)
 
@@ -203,8 +240,10 @@ func (m *Minion) ScheduleBackup(ctx context.Context, query *minion.QuerySchedule
 	}
 
 	ctxDb.getDatabase().BackupSchedule(sock, namespace, tablename, timestamp, s3dst)
+
+	date = time.Now().Format(timeFormat)
 	msg = fmt.Sprintf("Scheduled backup %s:%s every %s", query.Namespace, query.Table, timestamp)
-	return &minion.Response{Msg: msg}, nil
+	return &minion.Response{Msg: msg, Timestamp: date}, nil
 }
 
 func (m *Minion) UnscheduleBackup(ctx context.Context, query *minion.QueryScheduleBackup) (*minion.Response, error) {

@@ -69,9 +69,47 @@ func (m *QueryGetNamespaces) GetNamespace() string {
 	return ""
 }
 
+type QueryDatabase struct {
+	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryDatabase) Reset()         { *m = QueryDatabase{} }
+func (m *QueryDatabase) String() string { return proto.CompactTextString(m) }
+func (*QueryDatabase) ProtoMessage()    {}
+func (*QueryDatabase) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{1}
+}
+
+func (m *QueryDatabase) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryDatabase.Unmarshal(m, b)
+}
+func (m *QueryDatabase) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryDatabase.Marshal(b, m, deterministic)
+}
+func (m *QueryDatabase) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDatabase.Merge(m, src)
+}
+func (m *QueryDatabase) XXX_Size() int {
+	return xxx_messageInfo_QueryDatabase.Size(m)
+}
+func (m *QueryDatabase) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDatabase.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDatabase proto.InternalMessageInfo
+
+func (m *QueryDatabase) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
 type QueryGetTables struct {
 	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
-	Table                string   `protobuf:"bytes,2,opt,name=table,proto3" json:"table,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -81,7 +119,7 @@ func (m *QueryGetTables) Reset()         { *m = QueryGetTables{} }
 func (m *QueryGetTables) String() string { return proto.CompactTextString(m) }
 func (*QueryGetTables) ProtoMessage()    {}
 func (*QueryGetTables) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{1}
+	return fileDescriptor_70d86c67c629e4a9, []int{2}
 }
 
 func (m *QueryGetTables) XXX_Unmarshal(b []byte) error {
@@ -109,13 +147,6 @@ func (m *QueryGetTables) GetDb() string {
 	return ""
 }
 
-func (m *QueryGetTables) GetTable() string {
-	if m != nil {
-		return m.Table
-	}
-	return ""
-}
-
 type QueryScheduleBackup struct {
 	Db                   string   `protobuf:"bytes,1,opt,name=db,proto3" json:"db,omitempty"`
 	Namespace            string   `protobuf:"bytes,2,opt,name=namespace,proto3" json:"namespace,omitempty"`
@@ -130,7 +161,7 @@ func (m *QueryScheduleBackup) Reset()         { *m = QueryScheduleBackup{} }
 func (m *QueryScheduleBackup) String() string { return proto.CompactTextString(m) }
 func (*QueryScheduleBackup) ProtoMessage()    {}
 func (*QueryScheduleBackup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{2}
+	return fileDescriptor_70d86c67c629e4a9, []int{3}
 }
 
 func (m *QueryScheduleBackup) XXX_Unmarshal(b []byte) error {
@@ -192,7 +223,7 @@ func (m *QueryStartBackup) Reset()         { *m = QueryStartBackup{} }
 func (m *QueryStartBackup) String() string { return proto.CompactTextString(m) }
 func (*QueryStartBackup) ProtoMessage()    {}
 func (*QueryStartBackup) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{3}
+	return fileDescriptor_70d86c67c629e4a9, []int{4}
 }
 
 func (m *QueryStartBackup) XXX_Unmarshal(b []byte) error {
@@ -247,7 +278,7 @@ func (m *Namespaces) Reset()         { *m = Namespaces{} }
 func (m *Namespaces) String() string { return proto.CompactTextString(m) }
 func (*Namespaces) ProtoMessage()    {}
 func (*Namespaces) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{4}
+	return fileDescriptor_70d86c67c629e4a9, []int{5}
 }
 
 func (m *Namespaces) XXX_Unmarshal(b []byte) error {
@@ -290,17 +321,17 @@ func (m *Namespaces) GetOk() []float64 {
 }
 
 type Tables struct {
-	Tables               []string `protobuf:"bytes,1,rep,name=tables,proto3" json:"tables,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Tables               []*Tables_TableUnit `protobuf:"bytes,1,rep,name=tables,proto3" json:"tables,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}            `json:"-"`
+	XXX_unrecognized     []byte              `json:"-"`
+	XXX_sizecache        int32               `json:"-"`
 }
 
 func (m *Tables) Reset()         { *m = Tables{} }
 func (m *Tables) String() string { return proto.CompactTextString(m) }
 func (*Tables) ProtoMessage()    {}
 func (*Tables) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{5}
+	return fileDescriptor_70d86c67c629e4a9, []int{6}
 }
 
 func (m *Tables) XXX_Unmarshal(b []byte) error {
@@ -321,15 +352,110 @@ func (m *Tables) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Tables proto.InternalMessageInfo
 
-func (m *Tables) GetTables() []string {
+func (m *Tables) GetTables() []*Tables_TableUnit {
 	if m != nil {
 		return m.Tables
 	}
 	return nil
 }
 
+type Tables_TableUnit struct {
+	Name                 string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	LastBackup           string   `protobuf:"bytes,2,opt,name=lastBackup,proto3" json:"lastBackup,omitempty"`
+	Namespace            string   `protobuf:"bytes,3,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Tables_TableUnit) Reset()         { *m = Tables_TableUnit{} }
+func (m *Tables_TableUnit) String() string { return proto.CompactTextString(m) }
+func (*Tables_TableUnit) ProtoMessage()    {}
+func (*Tables_TableUnit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{6, 0}
+}
+
+func (m *Tables_TableUnit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Tables_TableUnit.Unmarshal(m, b)
+}
+func (m *Tables_TableUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Tables_TableUnit.Marshal(b, m, deterministic)
+}
+func (m *Tables_TableUnit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Tables_TableUnit.Merge(m, src)
+}
+func (m *Tables_TableUnit) XXX_Size() int {
+	return xxx_messageInfo_Tables_TableUnit.Size(m)
+}
+func (m *Tables_TableUnit) XXX_DiscardUnknown() {
+	xxx_messageInfo_Tables_TableUnit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Tables_TableUnit proto.InternalMessageInfo
+
+func (m *Tables_TableUnit) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Tables_TableUnit) GetLastBackup() string {
+	if m != nil {
+		return m.LastBackup
+	}
+	return ""
+}
+
+func (m *Tables_TableUnit) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+type Backups struct {
+	Backups              []string `protobuf:"bytes,1,rep,name=backups,proto3" json:"backups,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Backups) Reset()         { *m = Backups{} }
+func (m *Backups) String() string { return proto.CompactTextString(m) }
+func (*Backups) ProtoMessage()    {}
+func (*Backups) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70d86c67c629e4a9, []int{7}
+}
+
+func (m *Backups) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Backups.Unmarshal(m, b)
+}
+func (m *Backups) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Backups.Marshal(b, m, deterministic)
+}
+func (m *Backups) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Backups.Merge(m, src)
+}
+func (m *Backups) XXX_Size() int {
+	return xxx_messageInfo_Backups.Size(m)
+}
+func (m *Backups) XXX_DiscardUnknown() {
+	xxx_messageInfo_Backups.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Backups proto.InternalMessageInfo
+
+func (m *Backups) GetBackups() []string {
+	if m != nil {
+		return m.Backups
+	}
+	return nil
+}
+
 type Response struct {
 	Msg                  string   `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	Timestamp            string   `protobuf:"bytes,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -339,7 +465,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70d86c67c629e4a9, []int{6}
+	return fileDescriptor_70d86c67c629e4a9, []int{8}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -367,41 +493,57 @@ func (m *Response) GetMsg() string {
 	return ""
 }
 
+func (m *Response) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*QueryGetNamespaces)(nil), "minion.QueryGetNamespaces")
+	proto.RegisterType((*QueryDatabase)(nil), "minion.QueryDatabase")
 	proto.RegisterType((*QueryGetTables)(nil), "minion.QueryGetTables")
 	proto.RegisterType((*QueryScheduleBackup)(nil), "minion.QueryScheduleBackup")
 	proto.RegisterType((*QueryStartBackup)(nil), "minion.QueryStartBackup")
 	proto.RegisterType((*Namespaces)(nil), "minion.Namespaces")
 	proto.RegisterType((*Tables)(nil), "minion.Tables")
+	proto.RegisterType((*Tables_TableUnit)(nil), "minion.Tables.TableUnit")
+	proto.RegisterType((*Backups)(nil), "minion.Backups")
 	proto.RegisterType((*Response)(nil), "minion.Response")
 }
 
 func init() { proto.RegisterFile("minion.proto", fileDescriptor_70d86c67c629e4a9) }
 
 var fileDescriptor_70d86c67c629e4a9 = []byte{
-	// 337 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x93, 0x4f, 0x4f, 0x83, 0x30,
-	0x18, 0xc6, 0x47, 0x71, 0xc4, 0xbd, 0x2a, 0x21, 0x75, 0x59, 0x1a, 0xdc, 0x81, 0xf4, 0xb4, 0xd3,
-	0x0e, 0x1a, 0xbd, 0x78, 0xda, 0x3c, 0xe8, 0x45, 0x13, 0xe7, 0x9f, 0x7b, 0xd9, 0x1a, 0x25, 0x1b,
-	0x94, 0xac, 0x5d, 0x8c, 0x7e, 0x41, 0xbf, 0x96, 0x69, 0x4b, 0x05, 0xe6, 0x2e, 0x46, 0x6f, 0xbc,
-	0xcf, 0xc3, 0xef, 0x79, 0xa1, 0x0f, 0xc0, 0x61, 0x9e, 0x15, 0x99, 0x28, 0xc6, 0xe5, 0x5a, 0x28,
-	0x81, 0x03, 0x3b, 0xd1, 0x29, 0xe0, 0xfb, 0x0d, 0x5f, 0xbf, 0x5f, 0x73, 0x75, 0xc7, 0x72, 0x2e,
-	0x4b, 0x36, 0xe7, 0x12, 0x87, 0x80, 0x16, 0x29, 0xf1, 0x12, 0x6f, 0xd4, 0x9b, 0xa1, 0x45, 0x8a,
-	0x87, 0xd0, 0x2b, 0x9c, 0x4b, 0x90, 0x91, 0x6b, 0x81, 0x5e, 0x40, 0xe8, 0x32, 0x1e, 0x59, 0xba,
-	0xda, 0xc1, 0xf7, 0xa1, 0xab, 0xb4, 0x53, 0xb1, 0x76, 0xa0, 0x6f, 0x70, 0x6c, 0xb8, 0x87, 0xf9,
-	0x2b, 0x5f, 0x6c, 0x56, 0x7c, 0xca, 0xe6, 0xcb, 0x4d, 0xf9, 0xbb, 0xe5, 0x75, 0xb4, 0xdf, 0x88,
-	0xd6, 0x8c, 0xca, 0x72, 0x2e, 0x15, 0xcb, 0x4b, 0xb2, 0x67, 0x99, 0x6f, 0x81, 0x3e, 0x43, 0x64,
-	0x17, 0x2b, 0xb6, 0x56, 0xff, 0xb7, 0x95, 0xde, 0x00, 0x34, 0x0e, 0xb1, 0x0f, 0x5d, 0x03, 0x10,
-	0x2f, 0xf1, 0xf5, 0x3d, 0x66, 0xd0, 0xaa, 0xcc, 0x3e, 0xb8, 0x24, 0xc8, 0xaa, 0x66, 0xd0, 0xdb,
-	0xc5, 0x92, 0xf8, 0x89, 0x3f, 0xf2, 0x66, 0x48, 0x2c, 0x69, 0x02, 0x41, 0x75, 0x94, 0x03, 0x08,
-	0x4c, 0xb8, 0x8b, 0xa9, 0x26, 0x3a, 0x84, 0xfd, 0x19, 0x97, 0xa5, 0x28, 0x24, 0xc7, 0x11, 0xf8,
-	0xb9, 0x7c, 0xa9, 0x1e, 0x5e, 0x5f, 0x9e, 0x7e, 0x22, 0x08, 0x6e, 0x4d, 0xc3, 0x78, 0x02, 0x47,
-	0xed, 0x72, 0xe3, 0x71, 0xf5, 0x25, 0xfc, 0x2c, 0x3e, 0xc6, 0xce, 0xab, 0x35, 0xda, 0xc1, 0xe7,
-	0xd0, 0xab, 0xbb, 0x1d, 0x6c, 0xe3, 0x56, 0x8f, 0x43, 0xa7, 0xdb, 0x99, 0x76, 0xf0, 0x04, 0xc2,
-	0xad, 0x6a, 0x4f, 0x5a, 0x6c, 0xdb, 0x8c, 0x23, 0x67, 0xba, 0xf7, 0xa2, 0x1d, 0x7c, 0x05, 0xd1,
-	0x53, 0x21, 0xff, 0x18, 0x72, 0x09, 0x07, 0xcd, 0xa6, 0x49, 0x9b, 0xaf, 0x9d, 0x5d, 0x70, 0x1a,
-	0x98, 0xff, 0xe5, 0xec, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x26, 0xbd, 0x4e, 0x19, 0x3f, 0x03, 0x00,
+	// 433 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x3d, 0x8f, 0xd3, 0x40,
+	0x10, 0xf5, 0xc7, 0x9d, 0x0f, 0xcf, 0x71, 0xc6, 0x1a, 0x0e, 0xb4, 0x32, 0x08, 0xac, 0xa5, 0xb9,
+	0xea, 0x84, 0x82, 0xa0, 0x80, 0x2a, 0x01, 0x29, 0x34, 0x20, 0x61, 0x08, 0x1d, 0xc5, 0x3a, 0x59,
+	0x81, 0x95, 0xf8, 0x43, 0xd9, 0x8d, 0x10, 0xfc, 0x13, 0x7e, 0x2d, 0xc8, 0xfb, 0x11, 0x67, 0x1d,
+	0x1a, 0xc4, 0x55, 0xd9, 0x79, 0x6f, 0xde, 0x8c, 0xdf, 0xcc, 0x28, 0x70, 0xbb, 0xae, 0x9a, 0xaa,
+	0x6d, 0xae, 0xbb, 0x6d, 0x2b, 0x5b, 0x8c, 0x74, 0x44, 0x67, 0x80, 0x1f, 0x76, 0x7c, 0xfb, 0x63,
+	0xce, 0xe5, 0x7b, 0x56, 0x73, 0xd1, 0xb1, 0x25, 0x17, 0x98, 0x40, 0xb0, 0x2a, 0x89, 0x9f, 0xfb,
+	0x57, 0x71, 0x11, 0xac, 0x4a, 0x7c, 0x08, 0x71, 0x63, 0x59, 0x12, 0x28, 0x78, 0x00, 0xe8, 0x63,
+	0xb8, 0x50, 0x35, 0xde, 0x30, 0xc9, 0x4a, 0x26, 0xf8, 0x58, 0x4e, 0x73, 0x48, 0x6c, 0x93, 0x4f,
+	0xac, 0xdc, 0x1c, 0x37, 0xa0, 0xdf, 0xe1, 0xae, 0xca, 0xf8, 0xb8, 0xfc, 0xc6, 0x57, 0xbb, 0x0d,
+	0x9f, 0xb1, 0xe5, 0x7a, 0xd7, 0xfd, 0xdb, 0x77, 0xe0, 0x25, 0x9c, 0xca, 0xbe, 0x3c, 0x09, 0x15,
+	0xa3, 0x83, 0x5e, 0x23, 0xab, 0x9a, 0x0b, 0xc9, 0xea, 0x8e, 0x9c, 0x68, 0xcd, 0x1e, 0xa0, 0x9f,
+	0x21, 0xd5, 0x8d, 0x25, 0xdb, 0xca, 0x9b, 0xeb, 0x4a, 0xdf, 0x02, 0x1c, 0xcc, 0xf3, 0x12, 0x4e,
+	0x95, 0x80, 0xf8, 0x79, 0xd8, 0xe7, 0xa8, 0xa0, 0x47, 0x45, 0xf5, 0x93, 0x0b, 0x12, 0x68, 0x54,
+	0x05, 0x7d, 0xf7, 0x76, 0x4d, 0xc2, 0x3c, 0xbc, 0xf2, 0x8b, 0xa0, 0x5d, 0xd3, 0x5f, 0x3e, 0x44,
+	0x66, 0x6a, 0x4f, 0x21, 0x52, 0xd5, 0x75, 0x9d, 0xf3, 0x09, 0xb9, 0x36, 0x3b, 0xd5, 0xbc, 0xfe,
+	0x59, 0x34, 0x95, 0x2c, 0x4c, 0x5e, 0xf6, 0x05, 0xe2, 0x3d, 0x88, 0x08, 0x27, 0x7d, 0x63, 0xe3,
+	0x4c, 0xbd, 0xf1, 0x11, 0xc0, 0x86, 0x09, 0xe3, 0xdc, 0x98, 0x3b, 0x40, 0x5c, 0xef, 0xe1, 0x78,
+	0xf3, 0x4f, 0xe0, 0x4c, 0xe7, 0x09, 0x24, 0x70, 0x56, 0xea, 0xa7, 0x31, 0x69, 0x43, 0xfa, 0x12,
+	0x6e, 0x15, 0x5c, 0x74, 0x6d, 0x23, 0x38, 0xa6, 0x10, 0xd6, 0xe2, 0xab, 0xf9, 0x82, 0xfe, 0xe9,
+	0xae, 0x27, 0x18, 0xad, 0x67, 0xf2, 0x3b, 0x80, 0xe8, 0x9d, 0xf2, 0x88, 0x53, 0xb8, 0x70, 0x8f,
+	0x34, 0xb3, 0xee, 0x8f, 0x0f, 0x38, 0x43, 0xcb, 0x0d, 0x18, 0xf5, 0xf0, 0x39, 0xc4, 0xc3, 0x09,
+	0xde, 0x1f, 0xcb, 0x35, 0x9e, 0x25, 0xee, 0x50, 0xa9, 0x87, 0x2f, 0x00, 0xe6, 0x5c, 0x5a, 0xa3,
+	0xf7, 0x1c, 0x9d, 0xbd, 0xf9, 0xec, 0x8e, 0x85, 0x4d, 0x1e, 0xf5, 0x70, 0x0a, 0xc9, 0xe8, 0x9e,
+	0x1f, 0x38, 0x5a, 0x97, 0xcc, 0x52, 0x4b, 0xda, 0x69, 0x51, 0x0f, 0x5f, 0x43, 0xba, 0x68, 0xc4,
+	0x7f, 0x16, 0x79, 0x05, 0xe7, 0x87, 0xe7, 0x4d, 0x5c, 0xfd, 0xc0, 0xfc, 0x4d, 0x5c, 0x46, 0xea,
+	0xff, 0xe2, 0xd9, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x15, 0x00, 0x4f, 0x62, 0x3f, 0x04, 0x00,
 	0x00,
 }
 
@@ -419,6 +561,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MinionClient interface {
 	GetNamespaces(ctx context.Context, in *QueryGetNamespaces, opts ...grpc.CallOption) (*Namespaces, error)
 	GetTables(ctx context.Context, in *QueryGetTables, opts ...grpc.CallOption) (*Tables, error)
+	GetBackups(ctx context.Context, in *QueryDatabase, opts ...grpc.CallOption) (*Backups, error)
 	ScheduleBackup(ctx context.Context, in *QueryScheduleBackup, opts ...grpc.CallOption) (*Response, error)
 	UnscheduleBackup(ctx context.Context, in *QueryScheduleBackup, opts ...grpc.CallOption) (*Response, error)
 	StartBackup(ctx context.Context, in *QueryStartBackup, opts ...grpc.CallOption) (*Response, error)
@@ -444,6 +587,15 @@ func (c *minionClient) GetNamespaces(ctx context.Context, in *QueryGetNamespaces
 func (c *minionClient) GetTables(ctx context.Context, in *QueryGetTables, opts ...grpc.CallOption) (*Tables, error) {
 	out := new(Tables)
 	err := c.cc.Invoke(ctx, "/minion.Minion/GetTables", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *minionClient) GetBackups(ctx context.Context, in *QueryDatabase, opts ...grpc.CallOption) (*Backups, error) {
+	out := new(Backups)
+	err := c.cc.Invoke(ctx, "/minion.Minion/GetBackups", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -481,6 +633,7 @@ func (c *minionClient) StartBackup(ctx context.Context, in *QueryStartBackup, op
 type MinionServer interface {
 	GetNamespaces(context.Context, *QueryGetNamespaces) (*Namespaces, error)
 	GetTables(context.Context, *QueryGetTables) (*Tables, error)
+	GetBackups(context.Context, *QueryDatabase) (*Backups, error)
 	ScheduleBackup(context.Context, *QueryScheduleBackup) (*Response, error)
 	UnscheduleBackup(context.Context, *QueryScheduleBackup) (*Response, error)
 	StartBackup(context.Context, *QueryStartBackup) (*Response, error)
@@ -522,6 +675,24 @@ func _Minion_GetTables_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MinionServer).GetTables(ctx, req.(*QueryGetTables))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Minion_GetBackups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDatabase)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MinionServer).GetBackups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/minion.Minion/GetBackups",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MinionServer).GetBackups(ctx, req.(*QueryDatabase))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -591,6 +762,10 @@ var _Minion_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTables",
 			Handler:    _Minion_GetTables_Handler,
+		},
+		{
+			MethodName: "GetBackups",
+			Handler:    _Minion_GetBackups_Handler,
 		},
 		{
 			MethodName: "ScheduleBackup",

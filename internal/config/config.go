@@ -90,7 +90,7 @@ func (i *Storage) Put(filename, injectName string, out interface{}) {
 	i.Configs[injectName] = out
 }
 
-var Cache = cache.New(5*time.Minute, 10*time.Minute)
+var Cache = cache.New(1*time.Minute, 1*time.Minute)
 
 func init() {
 	InjectStorage = Storage{}

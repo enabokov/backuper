@@ -2,9 +2,10 @@ package hbase
 
 import (
 	"fmt"
-	"github.com/enabokov/backuper/internal/log"
 	"os/exec"
 	"regexp"
+
+	"github.com/enabokov/backuper/internal/log"
 )
 
 func listSnapshots() []string {
@@ -25,20 +26,18 @@ func listSnapshots() []string {
 func createSnapshotFromTable(namespace, tablename *string) string {
 	var snapshotName = fmt.Sprintf("%s-%s-snapshot-%s", *namespace, *tablename, uniqueKey)
 
-	log.Info.Println("Start: create snapshot", snapshotName)
-	out, err := exec.Command(
+	log.Info.Printf("create snapshot %s from %s\n", snapshotName, *tablename)
+	_, err := exec.Command(
 		"hbase",
 		"org.apache.hadoop.hbase.snapshot.CreateSnapshot",
 		fmt.Sprintf("--table %s", *tablename),
 		fmt.Sprintf("--name %s", snapshotName)).Output()
 	if err != nil {
-		log.Error.Println(err)
-		log.Error.Printf("failed to create snapshot %s from table %s\n", snapshotName, *tablename)
+		log.Error.Printf("failed to create snapshot %s from %s\n", snapshotName, *tablename)
 		return ""
 	}
 
-	log.Info.Println("Done: create snapshot", snapshotName)
-	log.Info.Println(string(out))
+	log.Info.Printf("done: create snapshot %s from %s\n", snapshotName, *tablename)
 	return snapshotName
 }
 
@@ -60,5 +59,4 @@ func deleteSnapshot(snapshotname *string) {
 	}
 
 	log.Info.Println("Done: delete snapshot", *snapshotname)
-	log.Info.Println(string(out))
 }

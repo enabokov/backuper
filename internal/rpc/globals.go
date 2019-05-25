@@ -2,12 +2,18 @@ package rpc
 
 type Minion struct{}
 
+type TableUnit struct {
+	Name       string
+	LastBackup string
+	Namespace  string
+}
+
 type Database interface {
 	GetNamespaces(socket interface{}) (names, sizes []string, checksums []float64)
 	GetTables(socket interface{}) []string
 
 	BackupSchedule(socket interface{}, namespace, tablename, timestamp string, s3 interface{})
-	BackupTableToS3(socket interface{}, namespace, tablename string, s3 interface{})
+	BackupInstant(socket interface{}, namespace, tablename string, s3 interface{})
 
 	ListSnapshots() []string
 }

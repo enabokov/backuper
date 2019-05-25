@@ -3,12 +3,13 @@ package hbase
 import (
 	"bufio"
 	"fmt"
-	"github.com/enabokov/backuper/internal/log"
-	"github.com/enabokov/backuper/pkg/plugins/globals"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
+
+	"github.com/enabokov/backuper/internal/log"
+	"github.com/enabokov/backuper/pkg/plugins/globals"
 )
 
 func writeAndGetTmpFile(cmds []string) (filename string) {
@@ -47,7 +48,7 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 	tmpFilename := writeAndGetTmpFile(cmds)
 
 	log.Info.Println("Creating table from snapshot", snapshotname)
-	out, err := exec.Command(
+	_, err := exec.Command(
 		"hbase",
 		"shell",
 		tmpFilename,
@@ -56,8 +57,6 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 		log.Error.Println(err)
 		return "", err
 	}
-
-	log.Info.Println(string(out))
 	return snapshotname + "_table", nil
 }
 
@@ -81,21 +80,36 @@ func getTables(socket globals.Socket) (tables []string) {
 	re := regexp.MustCompile(fmt.Sprintf("^[a-zA-Z0-9:_.-]*"))
 	for {
 		line, err := reader.ReadString('\n')
-		line = re.FindString(line)
-		tables = append(tables, line)
 		if err != nil {
 			break
 		}
+
+		line = re.FindString(line)
+		if strings.EqualFold(line, "TABLE") ||
+			strings.EqualFold(line, "147") ||
+			strings.EqualFold(line, "") ||
+			strings.EqualFold(line, "HBase") ||
+			strings.EqualFold(line, "Type") ||
+			strings.EqualFold(line, "Version") {
+			continue
+		}
+
+		tables = append(tables, line)
 	}
 
 	return tables
 }
 
-func backupTableToS3(socket globals.Socket, namespace *string, table *string, options *globals.S3Options) {
+func backupInstant(socket globals.Socket, namespace *string, table *string, options *globals.S3Options) {
 	snapshotname := createSnapshotFromTable(namespace, table)
-	ok := uploadSnapshotToS3(&snapshotname, options)
-	if !ok {
+	if snapshotname == "" {
+		log.Error.Printf("failed to create snapshot from %s:%s\n", *namespace, *table)
+		return
+	}
+
+	if ok := uploadSnapshotToS3(&snapshotname, options); !ok {
 		log.Error.Printf("failed to upload snapshot %s\n", snapshotname)
 	}
+
 	deleteSnapshot(&snapshotname)
 }

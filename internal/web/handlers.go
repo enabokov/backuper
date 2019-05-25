@@ -13,7 +13,6 @@ import (
 	"github.com/enabokov/backuper/internal/log"
 	"github.com/enabokov/backuper/internal/pool"
 	"github.com/enabokov/backuper/internal/proto/master"
-	"github.com/enabokov/backuper/internal/proto/minion"
 )
 
 type HTMLContext map[string]interface{}
@@ -65,6 +64,8 @@ func getIndexPage(w http.ResponseWriter, r *http.Request) {
 func backupStart(w http.ResponseWriter, r *http.Request) {
 	log.Info.Println(r.URL.Path)
 
+	dashboardConf := c.GetDashboardConf()
+
 	params, err := escapeParams(r, "host", "port", "db", "table", "namespace")
 	if err != nil {
 		log.Error.Println(err)
@@ -77,17 +78,29 @@ func backupStart(w http.ResponseWriter, r *http.Request) {
 		log.Error.Println(err)
 	}
 
-	log.Info.Printf("Start backup %s, %s, %d", params["table"], params["host"], port)
-	conn := connPool.GRPCConnect(r.Context(), params["host"], port, grpc.WithInsecure())
-	client := minion.NewMinionClient(conn)
-	msg, err := client.StartBackup(context.Background(), &minion.QueryStartBackup{Db: params["db"], Namespace: params["namespace"], Table: params["table"]})
+	log.Info.Printf("trigger master to instant backup %s, %s, %d", params["table"], params["host"], port)
+	conn := connPool.GRPCConnect(r.Context(), dashboardConf.Master.Host, dashboardConf.Master.Port, grpc.WithInsecure())
+	client := master.NewMasterClient(conn)
+	resp, err := client.InstantBackupByMinion(
+		context.Background(),
+		&master.QueryBackup{
+			MinionIP:   params[`host`],
+			MinionPort: int64(port),
+			Db:         params["db"],
+			Namespace:  params["namespace"],
+			Table:      params["table"],
+			Timestamp:  "",
+		},
+	)
 	if err != nil {
 		log.Error.Println(err)
+		connPool.GRPCDisconnect(conn)
 		return
 	}
 	connPool.GRPCDisconnect(conn)
+	log.Info.Printf("done: trigger master to instant backup %s, %s, %d", params["table"], params["host"], port)
 
-	config.Cache.Set(`alerts`, msg.Msg, 1*time.Minute)
+	config.Cache.Set(`alerts`, resp.Msg, 1*time.Minute)
 
 	redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%d", params["db"], params["host"], port)
 	http.Redirect(w, r, redirectUrl, 302)
@@ -105,6 +118,8 @@ func backupSchedule(w http.ResponseWriter, r *http.Request) {
 		log.Error.Println(err)
 	}
 
+	dashboardConf := c.GetDashboardConf()
+
 	if r.Method != http.MethodPost {
 		redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%d", params["db"], params["host"], port)
 		http.Redirect(w, r, redirectUrl, 302)
@@ -112,25 +127,29 @@ func backupSchedule(w http.ResponseWriter, r *http.Request) {
 
 	forms, _ := escapeForms(r, "schedule-time", "schedule-daily", "schedule-weekly", "schedule-monthly")
 
-	conn := connPool.GRPCConnect(r.Context(), params["host"], port, grpc.WithInsecure())
-	client := minion.NewMinionClient(conn)
-	msg, err := client.ScheduleBackup(
+	log.Info.Printf("trigger master to schedule backup %s, %s, %d at %s", params["table"], params["host"], port, forms[`schedule-time`])
+	conn := connPool.GRPCConnect(r.Context(), dashboardConf.Master.Host, dashboardConf.Master.Port, grpc.WithInsecure())
+	client := master.NewMasterClient(conn)
+	resp, err := client.ScheduleBackupByMinion(
 		context.Background(),
-		&minion.QueryScheduleBackup{
-			Db:        params["db"],
-			Namespace: params["namespace"],
-			Table:     params["table"],
-			Timestamp: forms["schedule-time"],
-		},
-	)
+		&master.QueryBackup{
+			MinionIP:   params[`host`],
+			MinionPort: int64(port),
+			Db:         params["db"],
+			Namespace:  params["namespace"],
+			Table:      params["table"],
+			Timestamp:  forms["schedule-time"],
+		})
 
 	if err != nil {
 		log.Error.Println(err)
+		connPool.GRPCDisconnect(conn)
 		return
 	}
 	connPool.GRPCDisconnect(conn)
+	log.Info.Printf("done: trigger master to schedule backup %s, %s, %d at %s", params["table"], params["host"], port, forms[`schedule-time`])
 
-	config.Cache.Set(`alerts`, msg.Msg, 1*time.Minute)
+	config.Cache.Set(`alerts`, resp.Msg, 1*time.Minute)
 
 	redirectUrl := fmt.Sprintf("/progress?db=%s&&host=%s&&port=%d", params["db"], params["host"], port)
 	http.Redirect(w, r, redirectUrl, 302)
@@ -155,12 +174,21 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	conn := connPool.GRPCConnect(r.Context(), params[`host`], port, grpc.WithInsecure())
-	client := minion.NewMinionClient(conn)
+	dashboardConf := c.GetDashboardConf()
+	log.Info.Printf("trigger master to get tables from minion %s, %d", params["host"], port)
+	conn := connPool.GRPCConnect(r.Context(), dashboardConf.Master.Host, dashboardConf.Master.Port, grpc.WithInsecure())
+	client := master.NewMasterClient(conn)
 
-	_tablesFromCache, ok := config.Cache.Get(params[`db`] + `:tables`)
-	if !ok {
-		tables, err := client.GetTables(context.Background(), &minion.QueryGetTables{Db: params[`db`]})
+	_tablesFromCache, _ := config.Cache.Get(params[`db`] + `:tables`)
+	// TODO: tmp
+	if true {
+		tables, err := client.GetTablesByMinion(context.Background(),
+			&master.QueryTablesByMinion{
+				MinionIP:   params[`host`],
+				MinionPort: int64(port),
+				Db:         params[`db`],
+			})
+
 		if err != nil {
 			log.Error.Println(err)
 			return
@@ -168,35 +196,12 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 
 		var _tmpTables []map[string]string
 		for _, tb := range tables.Tables {
-			if strings.EqualFold(tb, "TABLE") ||
-				strings.EqualFold(tb, "147") ||
-				strings.EqualFold(tb, "") ||
-				strings.EqualFold(tb, "HBase") ||
-				strings.EqualFold(tb, "Type") ||
-				strings.EqualFold(tb, "Version") {
-				continue
-			}
-
-			parts := strings.Split(tb, ":")
-
-			var (
-				namespace string
-				tablename string
-			)
-
-			if len(parts) > 1 {
-				namespace = parts[0]
-				tablename = parts[1]
-			} else {
-				namespace = "none"
-				tablename = parts[0]
-			}
-
 			_tmpTables = append(
 				_tmpTables,
 				map[string]string{
-					`namespace`: namespace,
-					`tablename`: tablename,
+					`namespace`:  tb.Namespace,
+					`tablename`:  tb.Name,
+					`lastbackup`: tb.LastBackup,
 				},
 			)
 		}
@@ -205,21 +210,21 @@ func backupProgress(w http.ResponseWriter, r *http.Request) {
 		_tablesFromCache = _tmpTables
 	}
 	tables = _tablesFromCache.([]map[string]string)
-
 	connPool.GRPCDisconnect(conn)
+	log.Info.Printf("done: trigger master to get tables from minion %s, %d", params["host"], port)
 
-	_Alerts, ok := config.Cache.Get(`alerts`)
+	_Alerts, _ := config.Cache.Get(`alerts`)
 	if _Alerts != nil {
 		alerts = append(alerts, _Alerts.(string))
 	}
 
 	ctx := HTMLContext{
-		"Db":     params["db"],
-		"Time":   minionsTime[params["host"]],
-		"Host":   params["host"],
-		"Port":   params["port"],
-		"Alerts": alerts,
-		"Tables": tables,
+		"Db":                params["db"],
+		"CurrentMinionTime": minionsTime[params["host"]],
+		"Host":              params["host"],
+		"Port":              params["port"],
+		"Alerts":            alerts,
+		"Tables":            tables,
 	}
 
 	render(w, ctx, "progress.html")

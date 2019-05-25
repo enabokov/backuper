@@ -9,8 +9,8 @@ import (
 func backupSchedule(socket globals.Socket, namespace, tablename, timestamp *string, s3 *globals.S3Options) {
 	backupFunc := func() {
 		log.Info.Printf("Executed cron job for backup %s:%s to %s every %s\n",
-			*namespace, *tablename, s3.BucketName, timestamp)
-		backupTableToS3(socket, namespace, tablename, s3)
+			*namespace, *tablename, s3.BucketName, *timestamp)
+		backupInstant(socket, namespace, tablename, s3)
 	}
 
 	log.Info.Printf("Schedule backup %s:%s every %s\n", *namespace, *tablename, *timestamp)
