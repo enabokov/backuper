@@ -5,6 +5,35 @@ package master;
 service Master {
     rpc Heartbeat(MinionInfo) returns (Response) {}
     rpc GetAllMinions(Query) returns (ListMinions) {}
+
+    rpc GetTablesByMinion(QueryTablesByMinion) returns (ListTableResponse) {}
+    rpc GetBackupsByMinion(QueryBackupsByMinion) returns (ListBackupResponse) {}
+
+    rpc InstantBackupByMinion(QueryBackup) returns (Response) {}
+    rpc ScheduleBackupByMinion(QueryBackup) returns (Response) {}
+}
+
+message Query {}
+
+message QueryTablesByMinion {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+}
+
+message QueryBackupsByMinion {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+}
+
+message QueryBackup {
+    string minionIP = 1;
+    int64 minionPort = 2;
+    string db = 3;
+    string namespace = 4;
+    string table = 5;
+    string timestamp = 6;
 }
 
 message MinionInfo {
@@ -14,9 +43,28 @@ message MinionInfo {
 
 message Response {
     string msg = 1;
+    string timestamp = 2;
 }
 
-message Query {}
+message ListTableResponse {
+    message TableUnit {
+        string Namespace = 1;
+        string Name = 2;
+        string LastBackup = 3;
+    }
+
+    repeated TableUnit tables = 1;
+}
+
+message ListBackupResponse {
+    message BackupUnit {
+        string Namespace = 1;
+        string Table = 2;
+        string Timestamp = 3;
+    }
+
+    repeated BackupUnit backups = 1;
+}
 
 message ListMinions{
     repeated string host = 1;

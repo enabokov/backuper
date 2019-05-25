@@ -5,6 +5,7 @@ package minion;
 service Minion {
     rpc GetNamespaces(QueryGetNamespaces) returns (Namespaces) {}
     rpc GetTables(QueryGetTables) returns (Tables) {}
+    rpc GetBackups(QueryDatabase) returns (Backups) {}
 
     rpc ScheduleBackup(QueryScheduleBackup) returns (Response) {}
     rpc UnscheduleBackup(QueryScheduleBackup) returns (Response) {}
@@ -16,9 +17,12 @@ message QueryGetNamespaces {
     string namespace = 2;
 }
 
+message QueryDatabase {
+    string db = 1;
+}
+
 message QueryGetTables {
     string db = 1;
-    string table = 2;
 }
 
 message QueryScheduleBackup {
@@ -41,9 +45,20 @@ message Namespaces {
 }
 
 message Tables {
-    repeated string tables = 1;
+    message TableUnit {
+        string name = 1;
+        string lastBackup = 2;
+        string namespace = 3;
+    }
+
+    repeated TableUnit tables = 1;
+}
+
+message Backups {
+    repeated string backups = 1;
 }
 
 message Response {
     string msg = 1;
+    string timestamp = 2;
 }

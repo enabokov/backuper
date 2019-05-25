@@ -22,6 +22,226 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type Query struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Query) Reset()         { *m = Query{} }
+func (m *Query) String() string { return proto.CompactTextString(m) }
+func (*Query) ProtoMessage()    {}
+func (*Query) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{0}
+}
+
+func (m *Query) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Query.Unmarshal(m, b)
+}
+func (m *Query) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Query.Marshal(b, m, deterministic)
+}
+func (m *Query) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Query.Merge(m, src)
+}
+func (m *Query) XXX_Size() int {
+	return xxx_messageInfo_Query.Size(m)
+}
+func (m *Query) XXX_DiscardUnknown() {
+	xxx_messageInfo_Query.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Query proto.InternalMessageInfo
+
+type QueryTablesByMinion struct {
+	MinionIP             string   `protobuf:"bytes,1,opt,name=minionIP,proto3" json:"minionIP,omitempty"`
+	MinionPort           int64    `protobuf:"varint,2,opt,name=minionPort,proto3" json:"minionPort,omitempty"`
+	Db                   string   `protobuf:"bytes,3,opt,name=db,proto3" json:"db,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryTablesByMinion) Reset()         { *m = QueryTablesByMinion{} }
+func (m *QueryTablesByMinion) String() string { return proto.CompactTextString(m) }
+func (*QueryTablesByMinion) ProtoMessage()    {}
+func (*QueryTablesByMinion) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{1}
+}
+
+func (m *QueryTablesByMinion) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryTablesByMinion.Unmarshal(m, b)
+}
+func (m *QueryTablesByMinion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryTablesByMinion.Marshal(b, m, deterministic)
+}
+func (m *QueryTablesByMinion) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryTablesByMinion.Merge(m, src)
+}
+func (m *QueryTablesByMinion) XXX_Size() int {
+	return xxx_messageInfo_QueryTablesByMinion.Size(m)
+}
+func (m *QueryTablesByMinion) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryTablesByMinion.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryTablesByMinion proto.InternalMessageInfo
+
+func (m *QueryTablesByMinion) GetMinionIP() string {
+	if m != nil {
+		return m.MinionIP
+	}
+	return ""
+}
+
+func (m *QueryTablesByMinion) GetMinionPort() int64 {
+	if m != nil {
+		return m.MinionPort
+	}
+	return 0
+}
+
+func (m *QueryTablesByMinion) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+type QueryBackupsByMinion struct {
+	MinionIP             string   `protobuf:"bytes,1,opt,name=minionIP,proto3" json:"minionIP,omitempty"`
+	MinionPort           int64    `protobuf:"varint,2,opt,name=minionPort,proto3" json:"minionPort,omitempty"`
+	Db                   string   `protobuf:"bytes,3,opt,name=db,proto3" json:"db,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryBackupsByMinion) Reset()         { *m = QueryBackupsByMinion{} }
+func (m *QueryBackupsByMinion) String() string { return proto.CompactTextString(m) }
+func (*QueryBackupsByMinion) ProtoMessage()    {}
+func (*QueryBackupsByMinion) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{2}
+}
+
+func (m *QueryBackupsByMinion) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryBackupsByMinion.Unmarshal(m, b)
+}
+func (m *QueryBackupsByMinion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryBackupsByMinion.Marshal(b, m, deterministic)
+}
+func (m *QueryBackupsByMinion) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBackupsByMinion.Merge(m, src)
+}
+func (m *QueryBackupsByMinion) XXX_Size() int {
+	return xxx_messageInfo_QueryBackupsByMinion.Size(m)
+}
+func (m *QueryBackupsByMinion) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBackupsByMinion.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBackupsByMinion proto.InternalMessageInfo
+
+func (m *QueryBackupsByMinion) GetMinionIP() string {
+	if m != nil {
+		return m.MinionIP
+	}
+	return ""
+}
+
+func (m *QueryBackupsByMinion) GetMinionPort() int64 {
+	if m != nil {
+		return m.MinionPort
+	}
+	return 0
+}
+
+func (m *QueryBackupsByMinion) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+type QueryBackup struct {
+	MinionIP             string   `protobuf:"bytes,1,opt,name=minionIP,proto3" json:"minionIP,omitempty"`
+	MinionPort           int64    `protobuf:"varint,2,opt,name=minionPort,proto3" json:"minionPort,omitempty"`
+	Db                   string   `protobuf:"bytes,3,opt,name=db,proto3" json:"db,omitempty"`
+	Namespace            string   `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	Table                string   `protobuf:"bytes,5,opt,name=table,proto3" json:"table,omitempty"`
+	Timestamp            string   `protobuf:"bytes,6,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryBackup) Reset()         { *m = QueryBackup{} }
+func (m *QueryBackup) String() string { return proto.CompactTextString(m) }
+func (*QueryBackup) ProtoMessage()    {}
+func (*QueryBackup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{3}
+}
+
+func (m *QueryBackup) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryBackup.Unmarshal(m, b)
+}
+func (m *QueryBackup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryBackup.Marshal(b, m, deterministic)
+}
+func (m *QueryBackup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBackup.Merge(m, src)
+}
+func (m *QueryBackup) XXX_Size() int {
+	return xxx_messageInfo_QueryBackup.Size(m)
+}
+func (m *QueryBackup) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBackup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBackup proto.InternalMessageInfo
+
+func (m *QueryBackup) GetMinionIP() string {
+	if m != nil {
+		return m.MinionIP
+	}
+	return ""
+}
+
+func (m *QueryBackup) GetMinionPort() int64 {
+	if m != nil {
+		return m.MinionPort
+	}
+	return 0
+}
+
+func (m *QueryBackup) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+func (m *QueryBackup) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *QueryBackup) GetTable() string {
+	if m != nil {
+		return m.Table
+	}
+	return ""
+}
+
+func (m *QueryBackup) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
+
 type MinionInfo struct {
 	Host                 string   `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`
 	LocalTime            string   `protobuf:"bytes,2,opt,name=localTime,proto3" json:"localTime,omitempty"`
@@ -34,7 +254,7 @@ func (m *MinionInfo) Reset()         { *m = MinionInfo{} }
 func (m *MinionInfo) String() string { return proto.CompactTextString(m) }
 func (*MinionInfo) ProtoMessage()    {}
 func (*MinionInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{0}
+	return fileDescriptor_f9c348dec43a6705, []int{4}
 }
 
 func (m *MinionInfo) XXX_Unmarshal(b []byte) error {
@@ -71,6 +291,7 @@ func (m *MinionInfo) GetLocalTime() string {
 
 type Response struct {
 	Msg                  string   `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	Timestamp            string   `protobuf:"bytes,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -80,7 +301,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{1}
+	return fileDescriptor_f9c348dec43a6705, []int{5}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -108,36 +329,200 @@ func (m *Response) GetMsg() string {
 	return ""
 }
 
-type Query struct {
+func (m *Response) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
+
+type ListTableResponse struct {
+	Tables               []*ListTableResponse_TableUnit `protobuf:"bytes,1,rep,name=tables,proto3" json:"tables,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                       `json:"-"`
+	XXX_unrecognized     []byte                         `json:"-"`
+	XXX_sizecache        int32                          `json:"-"`
+}
+
+func (m *ListTableResponse) Reset()         { *m = ListTableResponse{} }
+func (m *ListTableResponse) String() string { return proto.CompactTextString(m) }
+func (*ListTableResponse) ProtoMessage()    {}
+func (*ListTableResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{6}
+}
+
+func (m *ListTableResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListTableResponse.Unmarshal(m, b)
+}
+func (m *ListTableResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListTableResponse.Marshal(b, m, deterministic)
+}
+func (m *ListTableResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListTableResponse.Merge(m, src)
+}
+func (m *ListTableResponse) XXX_Size() int {
+	return xxx_messageInfo_ListTableResponse.Size(m)
+}
+func (m *ListTableResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListTableResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListTableResponse proto.InternalMessageInfo
+
+func (m *ListTableResponse) GetTables() []*ListTableResponse_TableUnit {
+	if m != nil {
+		return m.Tables
+	}
+	return nil
+}
+
+type ListTableResponse_TableUnit struct {
+	Namespace            string   `protobuf:"bytes,1,opt,name=Namespace,proto3" json:"Namespace,omitempty"`
+	Name                 string   `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
+	LastBackup           string   `protobuf:"bytes,3,opt,name=LastBackup,proto3" json:"LastBackup,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Query) Reset()         { *m = Query{} }
-func (m *Query) String() string { return proto.CompactTextString(m) }
-func (*Query) ProtoMessage()    {}
-func (*Query) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{2}
+func (m *ListTableResponse_TableUnit) Reset()         { *m = ListTableResponse_TableUnit{} }
+func (m *ListTableResponse_TableUnit) String() string { return proto.CompactTextString(m) }
+func (*ListTableResponse_TableUnit) ProtoMessage()    {}
+func (*ListTableResponse_TableUnit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{6, 0}
 }
 
-func (m *Query) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Query.Unmarshal(m, b)
+func (m *ListTableResponse_TableUnit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListTableResponse_TableUnit.Unmarshal(m, b)
 }
-func (m *Query) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Query.Marshal(b, m, deterministic)
+func (m *ListTableResponse_TableUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListTableResponse_TableUnit.Marshal(b, m, deterministic)
 }
-func (m *Query) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Query.Merge(m, src)
+func (m *ListTableResponse_TableUnit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListTableResponse_TableUnit.Merge(m, src)
 }
-func (m *Query) XXX_Size() int {
-	return xxx_messageInfo_Query.Size(m)
+func (m *ListTableResponse_TableUnit) XXX_Size() int {
+	return xxx_messageInfo_ListTableResponse_TableUnit.Size(m)
 }
-func (m *Query) XXX_DiscardUnknown() {
-	xxx_messageInfo_Query.DiscardUnknown(m)
+func (m *ListTableResponse_TableUnit) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListTableResponse_TableUnit.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Query proto.InternalMessageInfo
+var xxx_messageInfo_ListTableResponse_TableUnit proto.InternalMessageInfo
+
+func (m *ListTableResponse_TableUnit) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *ListTableResponse_TableUnit) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ListTableResponse_TableUnit) GetLastBackup() string {
+	if m != nil {
+		return m.LastBackup
+	}
+	return ""
+}
+
+type ListBackupResponse struct {
+	Backups              []*ListBackupResponse_BackupUnit `protobuf:"bytes,1,rep,name=backups,proto3" json:"backups,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                         `json:"-"`
+	XXX_unrecognized     []byte                           `json:"-"`
+	XXX_sizecache        int32                            `json:"-"`
+}
+
+func (m *ListBackupResponse) Reset()         { *m = ListBackupResponse{} }
+func (m *ListBackupResponse) String() string { return proto.CompactTextString(m) }
+func (*ListBackupResponse) ProtoMessage()    {}
+func (*ListBackupResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{7}
+}
+
+func (m *ListBackupResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListBackupResponse.Unmarshal(m, b)
+}
+func (m *ListBackupResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListBackupResponse.Marshal(b, m, deterministic)
+}
+func (m *ListBackupResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListBackupResponse.Merge(m, src)
+}
+func (m *ListBackupResponse) XXX_Size() int {
+	return xxx_messageInfo_ListBackupResponse.Size(m)
+}
+func (m *ListBackupResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListBackupResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListBackupResponse proto.InternalMessageInfo
+
+func (m *ListBackupResponse) GetBackups() []*ListBackupResponse_BackupUnit {
+	if m != nil {
+		return m.Backups
+	}
+	return nil
+}
+
+type ListBackupResponse_BackupUnit struct {
+	Namespace            string   `protobuf:"bytes,1,opt,name=Namespace,proto3" json:"Namespace,omitempty"`
+	Table                string   `protobuf:"bytes,2,opt,name=Table,proto3" json:"Table,omitempty"`
+	Timestamp            string   `protobuf:"bytes,3,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ListBackupResponse_BackupUnit) Reset()         { *m = ListBackupResponse_BackupUnit{} }
+func (m *ListBackupResponse_BackupUnit) String() string { return proto.CompactTextString(m) }
+func (*ListBackupResponse_BackupUnit) ProtoMessage()    {}
+func (*ListBackupResponse_BackupUnit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{7, 0}
+}
+
+func (m *ListBackupResponse_BackupUnit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListBackupResponse_BackupUnit.Unmarshal(m, b)
+}
+func (m *ListBackupResponse_BackupUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListBackupResponse_BackupUnit.Marshal(b, m, deterministic)
+}
+func (m *ListBackupResponse_BackupUnit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListBackupResponse_BackupUnit.Merge(m, src)
+}
+func (m *ListBackupResponse_BackupUnit) XXX_Size() int {
+	return xxx_messageInfo_ListBackupResponse_BackupUnit.Size(m)
+}
+func (m *ListBackupResponse_BackupUnit) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListBackupResponse_BackupUnit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListBackupResponse_BackupUnit proto.InternalMessageInfo
+
+func (m *ListBackupResponse_BackupUnit) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *ListBackupResponse_BackupUnit) GetTable() string {
+	if m != nil {
+		return m.Table
+	}
+	return ""
+}
+
+func (m *ListBackupResponse_BackupUnit) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
 
 type ListMinions struct {
 	Host                 []string `protobuf:"bytes,1,rep,name=host,proto3" json:"host,omitempty"`
@@ -151,7 +536,7 @@ func (m *ListMinions) Reset()         { *m = ListMinions{} }
 func (m *ListMinions) String() string { return proto.CompactTextString(m) }
 func (*ListMinions) ProtoMessage()    {}
 func (*ListMinions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{3}
+	return fileDescriptor_f9c348dec43a6705, []int{8}
 }
 
 func (m *ListMinions) XXX_Unmarshal(b []byte) error {
@@ -187,30 +572,56 @@ func (m *ListMinions) GetTime() []string {
 }
 
 func init() {
+	proto.RegisterType((*Query)(nil), "master.Query")
+	proto.RegisterType((*QueryTablesByMinion)(nil), "master.QueryTablesByMinion")
+	proto.RegisterType((*QueryBackupsByMinion)(nil), "master.QueryBackupsByMinion")
+	proto.RegisterType((*QueryBackup)(nil), "master.QueryBackup")
 	proto.RegisterType((*MinionInfo)(nil), "master.MinionInfo")
 	proto.RegisterType((*Response)(nil), "master.Response")
-	proto.RegisterType((*Query)(nil), "master.Query")
+	proto.RegisterType((*ListTableResponse)(nil), "master.ListTableResponse")
+	proto.RegisterType((*ListTableResponse_TableUnit)(nil), "master.ListTableResponse.TableUnit")
+	proto.RegisterType((*ListBackupResponse)(nil), "master.ListBackupResponse")
+	proto.RegisterType((*ListBackupResponse_BackupUnit)(nil), "master.ListBackupResponse.BackupUnit")
 	proto.RegisterType((*ListMinions)(nil), "master.ListMinions")
 }
 
 func init() { proto.RegisterFile("master.proto", fileDescriptor_f9c348dec43a6705) }
 
 var fileDescriptor_f9c348dec43a6705 = []byte{
-	// 214 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x90, 0xc1, 0x4e, 0x84, 0x30,
-	0x10, 0x86, 0x77, 0xdd, 0x15, 0x65, 0x74, 0x13, 0x32, 0x5e, 0x08, 0xe1, 0x60, 0x7a, 0xf2, 0xc4,
-	0x41, 0xc2, 0xd5, 0xc4, 0x93, 0x9a, 0xc8, 0x41, 0xe2, 0x0b, 0x14, 0x33, 0x6a, 0x93, 0xd2, 0x92,
-	0x76, 0x3c, 0xf8, 0xf6, 0x86, 0x42, 0x85, 0xdb, 0x3f, 0x7f, 0xdb, 0x7c, 0x5f, 0x07, 0xae, 0x07,
-	0xe9, 0x99, 0x5c, 0x35, 0x3a, 0xcb, 0x16, 0x93, 0x79, 0x12, 0x0f, 0x00, 0xad, 0x32, 0xca, 0x9a,
-	0x17, 0xf3, 0x69, 0x11, 0xe1, 0xf8, 0x6d, 0x3d, 0xe7, 0xfb, 0xdb, 0xfd, 0x5d, 0xda, 0x85, 0x8c,
-	0x25, 0xa4, 0xda, 0x7e, 0x48, 0xfd, 0xae, 0x06, 0xca, 0xcf, 0xc2, 0xc1, 0x5a, 0x88, 0x12, 0x2e,
-	0x3b, 0xf2, 0xa3, 0x35, 0x9e, 0x30, 0x83, 0xc3, 0xe0, 0xbf, 0x96, 0xc7, 0x53, 0x14, 0x17, 0x70,
-	0xfe, 0xf6, 0x43, 0xee, 0x57, 0x34, 0x70, 0xf5, 0xaa, 0x3c, 0xcf, 0x28, 0xbf, 0xe1, 0x1c, 0xfe,
-	0x39, 0x08, 0x47, 0x9e, 0x11, 0xa1, 0x9b, 0xf2, 0x3d, 0x43, 0xd2, 0x06, 0x4f, 0xac, 0x21, 0x7d,
-	0x26, 0xe9, 0xb8, 0x27, 0xc9, 0x88, 0xd5, 0xf2, 0x97, 0x55, 0xbd, 0xc8, 0x62, 0x17, 0x75, 0xc4,
-	0x0e, 0x1b, 0x38, 0x3d, 0x11, 0x3f, 0x6a, 0x1d, 0xb9, 0xa7, 0x78, 0x29, 0x58, 0x15, 0x37, 0x71,
-	0xdc, 0xb8, 0x89, 0x5d, 0x9f, 0x84, 0x15, 0xd5, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xe0, 0x8e,
-	0x3c, 0xa1, 0x32, 0x01, 0x00, 0x00,
+	// 527 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x8d, 0xe3, 0xc4, 0xad, 0x27, 0x14, 0xb5, 0x93, 0x80, 0x8c, 0xa9, 0x50, 0xb4, 0x08, 0x29,
+	0xa7, 0x1c, 0x5a, 0xf5, 0x02, 0x12, 0xd0, 0x5e, 0x42, 0xa4, 0x06, 0x05, 0x13, 0x8e, 0x20, 0xad,
+	0x93, 0x85, 0x5a, 0xf8, 0x4b, 0xde, 0xcd, 0xa1, 0x7f, 0x85, 0xbf, 0xc0, 0x81, 0x13, 0xff, 0x0f,
+	0xed, 0x87, 0xbf, 0x42, 0x23, 0x24, 0x04, 0xb7, 0x99, 0xb7, 0xfb, 0x66, 0xde, 0xcc, 0x5b, 0x1b,
+	0xee, 0x25, 0x94, 0x0b, 0x56, 0x4c, 0xf3, 0x22, 0x13, 0x19, 0x3a, 0x3a, 0x23, 0x07, 0xd0, 0x7f,
+	0xb7, 0x65, 0xc5, 0x2d, 0xa1, 0x30, 0x54, 0xc1, 0x8a, 0x86, 0x31, 0xe3, 0x57, 0xb7, 0x8b, 0x28,
+	0x8d, 0xb2, 0x14, 0x7d, 0x38, 0x4c, 0x54, 0x34, 0x5f, 0x7a, 0xd6, 0xd8, 0x9a, 0xb8, 0x41, 0x95,
+	0xe3, 0x13, 0x00, 0x1d, 0x2f, 0xb3, 0x42, 0x78, 0xdd, 0xb1, 0x35, 0xb1, 0x83, 0x06, 0x82, 0xf7,
+	0xa1, 0xbb, 0x09, 0x3d, 0x5b, 0xb1, 0xba, 0x9b, 0x90, 0x84, 0x30, 0x52, 0x2d, 0xae, 0xe8, 0xfa,
+	0xeb, 0x36, 0xff, 0x3f, 0x3d, 0xbe, 0x5b, 0x30, 0x68, 0x34, 0xf9, 0x97, 0xb5, 0xf1, 0x14, 0xdc,
+	0x94, 0x26, 0x8c, 0xe7, 0x74, 0xcd, 0xbc, 0x9e, 0x82, 0x6b, 0x00, 0x47, 0xd0, 0x17, 0x72, 0x77,
+	0x5e, 0x5f, 0x9d, 0xe8, 0x44, 0x72, 0x44, 0x94, 0x30, 0x2e, 0x68, 0x92, 0x7b, 0x8e, 0xe6, 0x54,
+	0x00, 0x79, 0x09, 0xa0, 0x77, 0x30, 0x4f, 0x3f, 0x67, 0x88, 0xd0, 0xbb, 0xc9, 0xb8, 0x30, 0x3a,
+	0x55, 0x2c, 0xf9, 0x71, 0xb6, 0xa6, 0xf1, 0x2a, 0x4a, 0x98, 0x92, 0xe8, 0x06, 0x35, 0x40, 0x9e,
+	0xc3, 0x61, 0xc0, 0x78, 0x9e, 0xa5, 0x9c, 0xe1, 0x31, 0xd8, 0x09, 0xff, 0x62, 0xc8, 0x32, 0x6c,
+	0xf7, 0xee, 0xee, 0xf6, 0xfe, 0x61, 0xc1, 0xc9, 0x75, 0xc4, 0x85, 0x32, 0xbc, 0xaa, 0xf2, 0x02,
+	0x1c, 0x25, 0x9c, 0x7b, 0xd6, 0xd8, 0x9e, 0x0c, 0xce, 0x9e, 0x4e, 0xcd, 0xb3, 0xf9, 0xed, 0xea,
+	0x54, 0x65, 0x1f, 0xd2, 0x48, 0x04, 0x86, 0xe2, 0x7f, 0x04, 0xb7, 0x02, 0x65, 0xf7, 0xb7, 0xd5,
+	0xb6, 0xb4, 0xaa, 0x1a, 0x90, 0xb3, 0xca, 0xc4, 0xc8, 0x52, 0xb1, 0xf4, 0xe3, 0x9a, 0x72, 0xa1,
+	0x9d, 0x33, 0x7b, 0x6f, 0x20, 0xe4, 0xa7, 0x05, 0x28, 0x65, 0xe8, 0xb4, 0x92, 0xfc, 0x0a, 0x0e,
+	0x42, 0xfd, 0xa2, 0x8c, 0xe6, 0x67, 0x4d, 0xcd, 0xed, 0xcb, 0x53, 0x9d, 0x2a, 0xd5, 0x25, 0xcb,
+	0xff, 0x04, 0x50, 0xc3, 0x7f, 0xd0, 0x3d, 0x82, 0xbe, 0x1a, 0xd1, 0x08, 0xd7, 0x89, 0xe4, 0xac,
+	0xaa, 0x4d, 0x6b, 0xe1, 0x35, 0x40, 0x2e, 0x60, 0x20, 0x95, 0x68, 0xa7, 0x79, 0xc3, 0x66, 0xbb,
+	0xb2, 0x19, 0xa1, 0x27, 0xb4, 0xc3, 0x0a, 0x93, 0xf1, 0xd9, 0x37, 0x1b, 0x9c, 0x85, 0x1a, 0x04,
+	0xcf, 0xc1, 0x7d, 0xc3, 0x68, 0x21, 0x42, 0x46, 0x05, 0x62, 0x39, 0x5e, 0xfd, 0x74, 0xfc, 0xe3,
+	0x12, 0x2b, 0x07, 0x25, 0x1d, 0xbc, 0x80, 0xa3, 0x19, 0x13, 0x97, 0x71, 0x5c, 0x36, 0x3e, 0x2a,
+	0x2f, 0xa9, 0x0f, 0xc4, 0x1f, 0x36, 0xd7, 0x64, 0xee, 0x90, 0x0e, 0x2e, 0xe0, 0x64, 0xc6, 0xc4,
+	0xce, 0x6f, 0xe0, 0x71, 0x8b, 0xda, 0x3e, 0xf4, 0x1f, 0xed, 0x7d, 0x23, 0xa4, 0x83, 0x4b, 0xc0,
+	0x19, 0x13, 0xbb, 0x9f, 0xfc, 0x69, 0xab, 0xde, 0xce, 0xa9, 0xef, 0xef, 0x37, 0x90, 0x74, 0xf0,
+	0x35, 0x3c, 0x98, 0xa7, 0x5c, 0xd0, 0xd4, 0x1c, 0x55, 0x45, 0x87, 0x77, 0x14, 0xbd, 0x73, 0x33,
+	0x97, 0xf0, 0xf0, 0xfd, 0xfa, 0x86, 0x6d, 0xb6, 0x31, 0xfb, 0xcb, 0x12, 0xa1, 0xa3, 0x7e, 0xa3,
+	0xe7, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x04, 0x73, 0xdc, 0x4c, 0x56, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -227,6 +638,10 @@ const _ = grpc.SupportPackageIsVersion4
 type MasterClient interface {
 	Heartbeat(ctx context.Context, in *MinionInfo, opts ...grpc.CallOption) (*Response, error)
 	GetAllMinions(ctx context.Context, in *Query, opts ...grpc.CallOption) (*ListMinions, error)
+	GetTablesByMinion(ctx context.Context, in *QueryTablesByMinion, opts ...grpc.CallOption) (*ListTableResponse, error)
+	GetBackupsByMinion(ctx context.Context, in *QueryBackupsByMinion, opts ...grpc.CallOption) (*ListBackupResponse, error)
+	InstantBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error)
+	ScheduleBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error)
 }
 
 type masterClient struct {
@@ -255,10 +670,50 @@ func (c *masterClient) GetAllMinions(ctx context.Context, in *Query, opts ...grp
 	return out, nil
 }
 
+func (c *masterClient) GetTablesByMinion(ctx context.Context, in *QueryTablesByMinion, opts ...grpc.CallOption) (*ListTableResponse, error) {
+	out := new(ListTableResponse)
+	err := c.cc.Invoke(ctx, "/master.Master/GetTablesByMinion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterClient) GetBackupsByMinion(ctx context.Context, in *QueryBackupsByMinion, opts ...grpc.CallOption) (*ListBackupResponse, error) {
+	out := new(ListBackupResponse)
+	err := c.cc.Invoke(ctx, "/master.Master/GetBackupsByMinion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterClient) InstantBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/master.Master/InstantBackupByMinion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *masterClient) ScheduleBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/master.Master/ScheduleBackupByMinion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MasterServer is the server API for Master service.
 type MasterServer interface {
 	Heartbeat(context.Context, *MinionInfo) (*Response, error)
 	GetAllMinions(context.Context, *Query) (*ListMinions, error)
+	GetTablesByMinion(context.Context, *QueryTablesByMinion) (*ListTableResponse, error)
+	GetBackupsByMinion(context.Context, *QueryBackupsByMinion) (*ListBackupResponse, error)
+	InstantBackupByMinion(context.Context, *QueryBackup) (*Response, error)
+	ScheduleBackupByMinion(context.Context, *QueryBackup) (*Response, error)
 }
 
 func RegisterMasterServer(s *grpc.Server, srv MasterServer) {
@@ -301,6 +756,78 @@ func _Master_GetAllMinions_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Master_GetTablesByMinion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTablesByMinion)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServer).GetTablesByMinion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/master.Master/GetTablesByMinion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServer).GetTablesByMinion(ctx, req.(*QueryTablesByMinion))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Master_GetBackupsByMinion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBackupsByMinion)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServer).GetBackupsByMinion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/master.Master/GetBackupsByMinion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServer).GetBackupsByMinion(ctx, req.(*QueryBackupsByMinion))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Master_InstantBackupByMinion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBackup)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServer).InstantBackupByMinion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/master.Master/InstantBackupByMinion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServer).InstantBackupByMinion(ctx, req.(*QueryBackup))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Master_ScheduleBackupByMinion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBackup)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServer).ScheduleBackupByMinion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/master.Master/ScheduleBackupByMinion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServer).ScheduleBackupByMinion(ctx, req.(*QueryBackup))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Master_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "master.Master",
 	HandlerType: (*MasterServer)(nil),
@@ -312,6 +839,22 @@ var _Master_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllMinions",
 			Handler:    _Master_GetAllMinions_Handler,
+		},
+		{
+			MethodName: "GetTablesByMinion",
+			Handler:    _Master_GetTablesByMinion_Handler,
+		},
+		{
+			MethodName: "GetBackupsByMinion",
+			Handler:    _Master_GetBackupsByMinion_Handler,
+		},
+		{
+			MethodName: "InstantBackupByMinion",
+			Handler:    _Master_InstantBackupByMinion_Handler,
+		},
+		{
+			MethodName: "ScheduleBackupByMinion",
+			Handler:    _Master_ScheduleBackupByMinion_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
