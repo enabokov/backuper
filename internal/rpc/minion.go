@@ -21,8 +21,6 @@ var (
 	c config.Storage
 )
 
-const timeFormat = `Mon Jan _2 15:04:05 2006`
-
 func init() {
 	c = config.InjectStorage
 }
@@ -184,7 +182,7 @@ func (m *Minion) StartBackup(ctx context.Context, query *minion.QueryStartBackup
 
 	go ctxDb.getDatabase().BackupInstant(sock, namespace, tablename, s3dst)
 
-	timestamp = time.Now().Format(timeFormat)
+	timestamp = time.Now().Format(time.RFC850)
 	msg = fmt.Sprintf("Backup %s %s -> %s at %s", namespace, tablename, s3dst.(globals.S3Options).BucketName, timestamp)
 	return &minion.Response{Msg: msg, Timestamp: timestamp}, nil
 }
@@ -241,7 +239,7 @@ func (m *Minion) ScheduleBackup(ctx context.Context, query *minion.QuerySchedule
 
 	ctxDb.getDatabase().BackupSchedule(sock, namespace, tablename, timestamp, s3dst)
 
-	date = time.Now().Format(timeFormat)
+	date = time.Now().Format(time.RFC850)
 	msg = fmt.Sprintf("Scheduled backup %s:%s every %s", query.Namespace, query.Table, timestamp)
 	return &minion.Response{Msg: msg, Timestamp: date}, nil
 }

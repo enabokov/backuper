@@ -242,6 +242,69 @@ func (m *QueryBackup) GetTimestamp() string {
 	return ""
 }
 
+type QueryBackupUnit struct {
+	MinionIP             string      `protobuf:"bytes,1,opt,name=minionIP,proto3" json:"minionIP,omitempty"`
+	MinionPort           int64       `protobuf:"varint,2,opt,name=minionPort,proto3" json:"minionPort,omitempty"`
+	Db                   string      `protobuf:"bytes,3,opt,name=db,proto3" json:"db,omitempty"`
+	Unit                 *BackupUnit `protobuf:"bytes,4,opt,name=unit,proto3" json:"unit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *QueryBackupUnit) Reset()         { *m = QueryBackupUnit{} }
+func (m *QueryBackupUnit) String() string { return proto.CompactTextString(m) }
+func (*QueryBackupUnit) ProtoMessage()    {}
+func (*QueryBackupUnit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{4}
+}
+
+func (m *QueryBackupUnit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryBackupUnit.Unmarshal(m, b)
+}
+func (m *QueryBackupUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryBackupUnit.Marshal(b, m, deterministic)
+}
+func (m *QueryBackupUnit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBackupUnit.Merge(m, src)
+}
+func (m *QueryBackupUnit) XXX_Size() int {
+	return xxx_messageInfo_QueryBackupUnit.Size(m)
+}
+func (m *QueryBackupUnit) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBackupUnit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBackupUnit proto.InternalMessageInfo
+
+func (m *QueryBackupUnit) GetMinionIP() string {
+	if m != nil {
+		return m.MinionIP
+	}
+	return ""
+}
+
+func (m *QueryBackupUnit) GetMinionPort() int64 {
+	if m != nil {
+		return m.MinionPort
+	}
+	return 0
+}
+
+func (m *QueryBackupUnit) GetDb() string {
+	if m != nil {
+		return m.Db
+	}
+	return ""
+}
+
+func (m *QueryBackupUnit) GetUnit() *BackupUnit {
+	if m != nil {
+		return m.Unit
+	}
+	return nil
+}
+
 type MinionInfo struct {
 	Host                 string   `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`
 	LocalTime            string   `protobuf:"bytes,2,opt,name=localTime,proto3" json:"localTime,omitempty"`
@@ -254,7 +317,7 @@ func (m *MinionInfo) Reset()         { *m = MinionInfo{} }
 func (m *MinionInfo) String() string { return proto.CompactTextString(m) }
 func (*MinionInfo) ProtoMessage()    {}
 func (*MinionInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{4}
+	return fileDescriptor_f9c348dec43a6705, []int{5}
 }
 
 func (m *MinionInfo) XXX_Unmarshal(b []byte) error {
@@ -301,7 +364,7 @@ func (m *Response) Reset()         { *m = Response{} }
 func (m *Response) String() string { return proto.CompactTextString(m) }
 func (*Response) ProtoMessage()    {}
 func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{5}
+	return fileDescriptor_f9c348dec43a6705, []int{6}
 }
 
 func (m *Response) XXX_Unmarshal(b []byte) error {
@@ -347,7 +410,7 @@ func (m *ListTableResponse) Reset()         { *m = ListTableResponse{} }
 func (m *ListTableResponse) String() string { return proto.CompactTextString(m) }
 func (*ListTableResponse) ProtoMessage()    {}
 func (*ListTableResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{6}
+	return fileDescriptor_f9c348dec43a6705, []int{7}
 }
 
 func (m *ListTableResponse) XXX_Unmarshal(b []byte) error {
@@ -379,6 +442,7 @@ type ListTableResponse_TableUnit struct {
 	Namespace            string   `protobuf:"bytes,1,opt,name=Namespace,proto3" json:"Namespace,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
 	LastBackup           string   `protobuf:"bytes,3,opt,name=LastBackup,proto3" json:"LastBackup,omitempty"`
+	ScheduledAt          string   `protobuf:"bytes,4,opt,name=ScheduledAt,proto3" json:"ScheduledAt,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -388,7 +452,7 @@ func (m *ListTableResponse_TableUnit) Reset()         { *m = ListTableResponse_T
 func (m *ListTableResponse_TableUnit) String() string { return proto.CompactTextString(m) }
 func (*ListTableResponse_TableUnit) ProtoMessage()    {}
 func (*ListTableResponse_TableUnit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{6, 0}
+	return fileDescriptor_f9c348dec43a6705, []int{7, 0}
 }
 
 func (m *ListTableResponse_TableUnit) XXX_Unmarshal(b []byte) error {
@@ -430,18 +494,80 @@ func (m *ListTableResponse_TableUnit) GetLastBackup() string {
 	return ""
 }
 
+func (m *ListTableResponse_TableUnit) GetScheduledAt() string {
+	if m != nil {
+		return m.ScheduledAt
+	}
+	return ""
+}
+
+type BackupUnit struct {
+	Namespace            string   `protobuf:"bytes,1,opt,name=Namespace,proto3" json:"Namespace,omitempty"`
+	Table                string   `protobuf:"bytes,2,opt,name=Table,proto3" json:"Table,omitempty"`
+	Timestamp            string   `protobuf:"bytes,3,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *BackupUnit) Reset()         { *m = BackupUnit{} }
+func (m *BackupUnit) String() string { return proto.CompactTextString(m) }
+func (*BackupUnit) ProtoMessage()    {}
+func (*BackupUnit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{8}
+}
+
+func (m *BackupUnit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_BackupUnit.Unmarshal(m, b)
+}
+func (m *BackupUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_BackupUnit.Marshal(b, m, deterministic)
+}
+func (m *BackupUnit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BackupUnit.Merge(m, src)
+}
+func (m *BackupUnit) XXX_Size() int {
+	return xxx_messageInfo_BackupUnit.Size(m)
+}
+func (m *BackupUnit) XXX_DiscardUnknown() {
+	xxx_messageInfo_BackupUnit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BackupUnit proto.InternalMessageInfo
+
+func (m *BackupUnit) GetNamespace() string {
+	if m != nil {
+		return m.Namespace
+	}
+	return ""
+}
+
+func (m *BackupUnit) GetTable() string {
+	if m != nil {
+		return m.Table
+	}
+	return ""
+}
+
+func (m *BackupUnit) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
+
 type ListBackupResponse struct {
-	Backups              []*ListBackupResponse_BackupUnit `protobuf:"bytes,1,rep,name=backups,proto3" json:"backups,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                         `json:"-"`
-	XXX_unrecognized     []byte                           `json:"-"`
-	XXX_sizecache        int32                            `json:"-"`
+	Backups              []*BackupUnit `protobuf:"bytes,1,rep,name=backups,proto3" json:"backups,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
 }
 
 func (m *ListBackupResponse) Reset()         { *m = ListBackupResponse{} }
 func (m *ListBackupResponse) String() string { return proto.CompactTextString(m) }
 func (*ListBackupResponse) ProtoMessage()    {}
 func (*ListBackupResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{7}
+	return fileDescriptor_f9c348dec43a6705, []int{9}
 }
 
 func (m *ListBackupResponse) XXX_Unmarshal(b []byte) error {
@@ -462,81 +588,25 @@ func (m *ListBackupResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ListBackupResponse proto.InternalMessageInfo
 
-func (m *ListBackupResponse) GetBackups() []*ListBackupResponse_BackupUnit {
+func (m *ListBackupResponse) GetBackups() []*BackupUnit {
 	if m != nil {
 		return m.Backups
 	}
 	return nil
 }
 
-type ListBackupResponse_BackupUnit struct {
-	Namespace            string   `protobuf:"bytes,1,opt,name=Namespace,proto3" json:"Namespace,omitempty"`
-	Table                string   `protobuf:"bytes,2,opt,name=Table,proto3" json:"Table,omitempty"`
-	Timestamp            string   `protobuf:"bytes,3,opt,name=Timestamp,proto3" json:"Timestamp,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ListBackupResponse_BackupUnit) Reset()         { *m = ListBackupResponse_BackupUnit{} }
-func (m *ListBackupResponse_BackupUnit) String() string { return proto.CompactTextString(m) }
-func (*ListBackupResponse_BackupUnit) ProtoMessage()    {}
-func (*ListBackupResponse_BackupUnit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{7, 0}
-}
-
-func (m *ListBackupResponse_BackupUnit) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ListBackupResponse_BackupUnit.Unmarshal(m, b)
-}
-func (m *ListBackupResponse_BackupUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ListBackupResponse_BackupUnit.Marshal(b, m, deterministic)
-}
-func (m *ListBackupResponse_BackupUnit) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListBackupResponse_BackupUnit.Merge(m, src)
-}
-func (m *ListBackupResponse_BackupUnit) XXX_Size() int {
-	return xxx_messageInfo_ListBackupResponse_BackupUnit.Size(m)
-}
-func (m *ListBackupResponse_BackupUnit) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListBackupResponse_BackupUnit.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ListBackupResponse_BackupUnit proto.InternalMessageInfo
-
-func (m *ListBackupResponse_BackupUnit) GetNamespace() string {
-	if m != nil {
-		return m.Namespace
-	}
-	return ""
-}
-
-func (m *ListBackupResponse_BackupUnit) GetTable() string {
-	if m != nil {
-		return m.Table
-	}
-	return ""
-}
-
-func (m *ListBackupResponse_BackupUnit) GetTimestamp() string {
-	if m != nil {
-		return m.Timestamp
-	}
-	return ""
-}
-
 type ListMinions struct {
-	Host                 []string `protobuf:"bytes,1,rep,name=host,proto3" json:"host,omitempty"`
-	Time                 []string `protobuf:"bytes,2,rep,name=time,proto3" json:"time,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Unit                 []*ListMinions_MinionUnit `protobuf:"bytes,1,rep,name=unit,proto3" json:"unit,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                  `json:"-"`
+	XXX_unrecognized     []byte                    `json:"-"`
+	XXX_sizecache        int32                     `json:"-"`
 }
 
 func (m *ListMinions) Reset()         { *m = ListMinions{} }
 func (m *ListMinions) String() string { return proto.CompactTextString(m) }
 func (*ListMinions) ProtoMessage()    {}
 func (*ListMinions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f9c348dec43a6705, []int{8}
+	return fileDescriptor_f9c348dec43a6705, []int{10}
 }
 
 func (m *ListMinions) XXX_Unmarshal(b []byte) error {
@@ -557,18 +627,66 @@ func (m *ListMinions) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ListMinions proto.InternalMessageInfo
 
-func (m *ListMinions) GetHost() []string {
+func (m *ListMinions) GetUnit() []*ListMinions_MinionUnit {
 	if m != nil {
-		return m.Host
+		return m.Unit
 	}
 	return nil
 }
 
-func (m *ListMinions) GetTime() []string {
+type ListMinions_MinionUnit struct {
+	Host                 string   `protobuf:"bytes,1,opt,name=host,proto3" json:"host,omitempty"`
+	Time                 string   `protobuf:"bytes,2,opt,name=time,proto3" json:"time,omitempty"`
+	IsActive             bool     `protobuf:"varint,3,opt,name=isActive,proto3" json:"isActive,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ListMinions_MinionUnit) Reset()         { *m = ListMinions_MinionUnit{} }
+func (m *ListMinions_MinionUnit) String() string { return proto.CompactTextString(m) }
+func (*ListMinions_MinionUnit) ProtoMessage()    {}
+func (*ListMinions_MinionUnit) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f9c348dec43a6705, []int{10, 0}
+}
+
+func (m *ListMinions_MinionUnit) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ListMinions_MinionUnit.Unmarshal(m, b)
+}
+func (m *ListMinions_MinionUnit) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ListMinions_MinionUnit.Marshal(b, m, deterministic)
+}
+func (m *ListMinions_MinionUnit) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListMinions_MinionUnit.Merge(m, src)
+}
+func (m *ListMinions_MinionUnit) XXX_Size() int {
+	return xxx_messageInfo_ListMinions_MinionUnit.Size(m)
+}
+func (m *ListMinions_MinionUnit) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListMinions_MinionUnit.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListMinions_MinionUnit proto.InternalMessageInfo
+
+func (m *ListMinions_MinionUnit) GetHost() string {
+	if m != nil {
+		return m.Host
+	}
+	return ""
+}
+
+func (m *ListMinions_MinionUnit) GetTime() string {
 	if m != nil {
 		return m.Time
 	}
-	return nil
+	return ""
+}
+
+func (m *ListMinions_MinionUnit) GetIsActive() bool {
+	if m != nil {
+		return m.IsActive
+	}
+	return false
 }
 
 func init() {
@@ -576,52 +694,60 @@ func init() {
 	proto.RegisterType((*QueryTablesByMinion)(nil), "master.QueryTablesByMinion")
 	proto.RegisterType((*QueryBackupsByMinion)(nil), "master.QueryBackupsByMinion")
 	proto.RegisterType((*QueryBackup)(nil), "master.QueryBackup")
+	proto.RegisterType((*QueryBackupUnit)(nil), "master.QueryBackupUnit")
 	proto.RegisterType((*MinionInfo)(nil), "master.MinionInfo")
 	proto.RegisterType((*Response)(nil), "master.Response")
 	proto.RegisterType((*ListTableResponse)(nil), "master.ListTableResponse")
 	proto.RegisterType((*ListTableResponse_TableUnit)(nil), "master.ListTableResponse.TableUnit")
+	proto.RegisterType((*BackupUnit)(nil), "master.BackupUnit")
 	proto.RegisterType((*ListBackupResponse)(nil), "master.ListBackupResponse")
-	proto.RegisterType((*ListBackupResponse_BackupUnit)(nil), "master.ListBackupResponse.BackupUnit")
 	proto.RegisterType((*ListMinions)(nil), "master.ListMinions")
+	proto.RegisterType((*ListMinions_MinionUnit)(nil), "master.ListMinions.MinionUnit")
 }
 
 func init() { proto.RegisterFile("master.proto", fileDescriptor_f9c348dec43a6705) }
 
 var fileDescriptor_f9c348dec43a6705 = []byte{
-	// 527 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0x8d, 0xe3, 0xc4, 0xad, 0x27, 0x14, 0xb5, 0x93, 0x80, 0x8c, 0xa9, 0x50, 0xb4, 0x08, 0x29,
-	0xa7, 0x1c, 0x5a, 0xf5, 0x02, 0x12, 0xd0, 0x5e, 0x42, 0xa4, 0x06, 0x05, 0x13, 0x8e, 0x20, 0xad,
-	0x93, 0x85, 0x5a, 0xf8, 0x4b, 0xde, 0xcd, 0xa1, 0x7f, 0x85, 0xbf, 0xc0, 0x81, 0x13, 0xff, 0x0f,
-	0xed, 0x87, 0xbf, 0x42, 0x23, 0x24, 0x04, 0xb7, 0x99, 0xb7, 0xfb, 0x66, 0xde, 0xcc, 0x5b, 0x1b,
-	0xee, 0x25, 0x94, 0x0b, 0x56, 0x4c, 0xf3, 0x22, 0x13, 0x19, 0x3a, 0x3a, 0x23, 0x07, 0xd0, 0x7f,
-	0xb7, 0x65, 0xc5, 0x2d, 0xa1, 0x30, 0x54, 0xc1, 0x8a, 0x86, 0x31, 0xe3, 0x57, 0xb7, 0x8b, 0x28,
-	0x8d, 0xb2, 0x14, 0x7d, 0x38, 0x4c, 0x54, 0x34, 0x5f, 0x7a, 0xd6, 0xd8, 0x9a, 0xb8, 0x41, 0x95,
-	0xe3, 0x13, 0x00, 0x1d, 0x2f, 0xb3, 0x42, 0x78, 0xdd, 0xb1, 0x35, 0xb1, 0x83, 0x06, 0x82, 0xf7,
-	0xa1, 0xbb, 0x09, 0x3d, 0x5b, 0xb1, 0xba, 0x9b, 0x90, 0x84, 0x30, 0x52, 0x2d, 0xae, 0xe8, 0xfa,
-	0xeb, 0x36, 0xff, 0x3f, 0x3d, 0xbe, 0x5b, 0x30, 0x68, 0x34, 0xf9, 0x97, 0xb5, 0xf1, 0x14, 0xdc,
-	0x94, 0x26, 0x8c, 0xe7, 0x74, 0xcd, 0xbc, 0x9e, 0x82, 0x6b, 0x00, 0x47, 0xd0, 0x17, 0x72, 0x77,
-	0x5e, 0x5f, 0x9d, 0xe8, 0x44, 0x72, 0x44, 0x94, 0x30, 0x2e, 0x68, 0x92, 0x7b, 0x8e, 0xe6, 0x54,
-	0x00, 0x79, 0x09, 0xa0, 0x77, 0x30, 0x4f, 0x3f, 0x67, 0x88, 0xd0, 0xbb, 0xc9, 0xb8, 0x30, 0x3a,
-	0x55, 0x2c, 0xf9, 0x71, 0xb6, 0xa6, 0xf1, 0x2a, 0x4a, 0x98, 0x92, 0xe8, 0x06, 0x35, 0x40, 0x9e,
-	0xc3, 0x61, 0xc0, 0x78, 0x9e, 0xa5, 0x9c, 0xe1, 0x31, 0xd8, 0x09, 0xff, 0x62, 0xc8, 0x32, 0x6c,
-	0xf7, 0xee, 0xee, 0xf6, 0xfe, 0x61, 0xc1, 0xc9, 0x75, 0xc4, 0x85, 0x32, 0xbc, 0xaa, 0xf2, 0x02,
-	0x1c, 0x25, 0x9c, 0x7b, 0xd6, 0xd8, 0x9e, 0x0c, 0xce, 0x9e, 0x4e, 0xcd, 0xb3, 0xf9, 0xed, 0xea,
-	0x54, 0x65, 0x1f, 0xd2, 0x48, 0x04, 0x86, 0xe2, 0x7f, 0x04, 0xb7, 0x02, 0x65, 0xf7, 0xb7, 0xd5,
-	0xb6, 0xb4, 0xaa, 0x1a, 0x90, 0xb3, 0xca, 0xc4, 0xc8, 0x52, 0xb1, 0xf4, 0xe3, 0x9a, 0x72, 0xa1,
-	0x9d, 0x33, 0x7b, 0x6f, 0x20, 0xe4, 0xa7, 0x05, 0x28, 0x65, 0xe8, 0xb4, 0x92, 0xfc, 0x0a, 0x0e,
-	0x42, 0xfd, 0xa2, 0x8c, 0xe6, 0x67, 0x4d, 0xcd, 0xed, 0xcb, 0x53, 0x9d, 0x2a, 0xd5, 0x25, 0xcb,
-	0xff, 0x04, 0x50, 0xc3, 0x7f, 0xd0, 0x3d, 0x82, 0xbe, 0x1a, 0xd1, 0x08, 0xd7, 0x89, 0xe4, 0xac,
-	0xaa, 0x4d, 0x6b, 0xe1, 0x35, 0x40, 0x2e, 0x60, 0x20, 0x95, 0x68, 0xa7, 0x79, 0xc3, 0x66, 0xbb,
-	0xb2, 0x19, 0xa1, 0x27, 0xb4, 0xc3, 0x0a, 0x93, 0xf1, 0xd9, 0x37, 0x1b, 0x9c, 0x85, 0x1a, 0x04,
-	0xcf, 0xc1, 0x7d, 0xc3, 0x68, 0x21, 0x42, 0x46, 0x05, 0x62, 0x39, 0x5e, 0xfd, 0x74, 0xfc, 0xe3,
-	0x12, 0x2b, 0x07, 0x25, 0x1d, 0xbc, 0x80, 0xa3, 0x19, 0x13, 0x97, 0x71, 0x5c, 0x36, 0x3e, 0x2a,
-	0x2f, 0xa9, 0x0f, 0xc4, 0x1f, 0x36, 0xd7, 0x64, 0xee, 0x90, 0x0e, 0x2e, 0xe0, 0x64, 0xc6, 0xc4,
-	0xce, 0x6f, 0xe0, 0x71, 0x8b, 0xda, 0x3e, 0xf4, 0x1f, 0xed, 0x7d, 0x23, 0xa4, 0x83, 0x4b, 0xc0,
-	0x19, 0x13, 0xbb, 0x9f, 0xfc, 0x69, 0xab, 0xde, 0xce, 0xa9, 0xef, 0xef, 0x37, 0x90, 0x74, 0xf0,
-	0x35, 0x3c, 0x98, 0xa7, 0x5c, 0xd0, 0xd4, 0x1c, 0x55, 0x45, 0x87, 0x77, 0x14, 0xbd, 0x73, 0x33,
-	0x97, 0xf0, 0xf0, 0xfd, 0xfa, 0x86, 0x6d, 0xb6, 0x31, 0xfb, 0xcb, 0x12, 0xa1, 0xa3, 0x7e, 0xa3,
-	0xe7, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0x04, 0x73, 0xdc, 0x4c, 0x56, 0x05, 0x00, 0x00,
+	// 612 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0xcd, 0x8e, 0x12, 0x41,
+	0x10, 0x66, 0xf8, 0x5b, 0x28, 0x5c, 0x65, 0x1b, 0xd4, 0x71, 0xdc, 0x6c, 0x48, 0x9b, 0x18, 0x0e,
+	0x86, 0x03, 0x1b, 0x2f, 0x9a, 0xa8, 0x70, 0x41, 0x92, 0xc5, 0xe0, 0xc8, 0x5e, 0x4d, 0x7a, 0xa0,
+	0x75, 0x27, 0xce, 0x5f, 0xe8, 0xc6, 0x64, 0x4f, 0x9e, 0x7c, 0x02, 0x1f, 0xc3, 0xa7, 0xf1, 0xec,
+	0xcb, 0x98, 0xae, 0xee, 0xf9, 0x01, 0x47, 0x0f, 0x66, 0x3d, 0x51, 0x55, 0xdd, 0x55, 0xf5, 0xd5,
+	0x57, 0xdf, 0x34, 0x70, 0x2b, 0x64, 0x42, 0xf2, 0xed, 0x28, 0xd9, 0xc6, 0x32, 0x26, 0x4d, 0xed,
+	0xd1, 0x23, 0x68, 0xbc, 0xdd, 0xf1, 0xed, 0x35, 0x65, 0xd0, 0x43, 0x63, 0xc5, 0xbc, 0x80, 0x8b,
+	0xe9, 0xf5, 0xc2, 0x8f, 0xfc, 0x38, 0x22, 0x0e, 0xb4, 0x42, 0xb4, 0xe6, 0x4b, 0xdb, 0x1a, 0x58,
+	0xc3, 0xb6, 0x9b, 0xf9, 0xe4, 0x0c, 0x40, 0xdb, 0xcb, 0x78, 0x2b, 0xed, 0xea, 0xc0, 0x1a, 0xd6,
+	0xdc, 0x42, 0x84, 0xdc, 0x86, 0xea, 0xc6, 0xb3, 0x6b, 0x98, 0x55, 0xdd, 0x78, 0xd4, 0x83, 0x3e,
+	0xb6, 0x98, 0xb2, 0xf5, 0xa7, 0x5d, 0xf2, 0x7f, 0x7a, 0x7c, 0xb7, 0xa0, 0x53, 0x68, 0x72, 0x93,
+	0xb5, 0xc9, 0x29, 0xb4, 0x23, 0x16, 0x72, 0x91, 0xb0, 0x35, 0xb7, 0xeb, 0x18, 0xce, 0x03, 0xa4,
+	0x0f, 0x0d, 0xa9, 0xb8, 0xb3, 0x1b, 0x78, 0xa2, 0x1d, 0x95, 0x23, 0xfd, 0x90, 0x0b, 0xc9, 0xc2,
+	0xc4, 0x6e, 0xea, 0x9c, 0x2c, 0x40, 0xbf, 0x5a, 0x70, 0xa7, 0x80, 0xf6, 0x32, 0xf2, 0xe5, 0x8d,
+	0x22, 0x7e, 0x0c, 0xf5, 0x5d, 0xe4, 0x4b, 0x04, 0xdb, 0x19, 0x93, 0x91, 0x91, 0x40, 0xde, 0xcd,
+	0xc5, 0x73, 0xfa, 0x02, 0x40, 0xef, 0x62, 0x1e, 0x7d, 0x88, 0x09, 0x81, 0xfa, 0x55, 0x2c, 0xa4,
+	0xe9, 0x8e, 0xb6, 0x9a, 0x23, 0x88, 0xd7, 0x2c, 0x58, 0xf9, 0x21, 0xc7, 0xc6, 0x6d, 0x37, 0x0f,
+	0xd0, 0x67, 0xd0, 0x72, 0xb9, 0x48, 0xe2, 0x48, 0x70, 0xd2, 0x85, 0x5a, 0x28, 0x3e, 0x9a, 0x64,
+	0x65, 0xee, 0x73, 0x50, 0x3d, 0xe4, 0xe0, 0x87, 0x05, 0x27, 0x17, 0xbe, 0x90, 0x28, 0xbc, 0xac,
+	0xca, 0x73, 0x68, 0x22, 0x81, 0xc2, 0xb6, 0x06, 0xb5, 0x61, 0x67, 0xfc, 0x28, 0xc5, 0xfe, 0xdb,
+	0xd5, 0x11, 0x7a, 0x38, 0x8c, 0x49, 0x71, 0xbe, 0x40, 0x3b, 0x0b, 0xaa, 0xee, 0x6f, 0xb2, 0xad,
+	0x69, 0x54, 0x79, 0x40, 0xcd, 0xaa, 0x1c, 0x03, 0x0b, 0x6d, 0xc5, 0xf2, 0x05, 0x13, 0x52, 0xb3,
+	0x64, 0xd8, 0x2c, 0x44, 0xc8, 0x00, 0x3a, 0xef, 0xd6, 0x57, 0x7c, 0xb3, 0x0b, 0xf8, 0x66, 0x22,
+	0x8d, 0x12, 0x8a, 0x21, 0xfa, 0x1e, 0xa0, 0xb0, 0xd1, 0xbf, 0x23, 0xe8, 0x43, 0x03, 0xc1, 0x1a,
+	0x08, 0xda, 0x51, 0x39, 0xab, 0x8c, 0x33, 0x0d, 0x21, 0x0f, 0xd0, 0x29, 0x10, 0xc5, 0x83, 0xee,
+	0x91, 0x71, 0xf6, 0x04, 0x8e, 0x3c, 0xfd, 0x69, 0x19, 0xd2, 0xca, 0x16, 0x9e, 0x5e, 0xa1, 0xdf,
+	0x2c, 0xe8, 0xa8, 0x22, 0x7a, 0xf1, 0x82, 0x8c, 0x8d, 0x56, 0x74, 0xea, 0x59, 0x91, 0x6f, 0x73,
+	0x65, 0xa4, 0x7f, 0x73, 0xdd, 0x38, 0xcb, 0x54, 0x37, 0x38, 0x67, 0x99, 0x6e, 0x08, 0xd4, 0x65,
+	0x2e, 0x19, 0xb4, 0x95, 0xc2, 0x7d, 0x31, 0x59, 0x4b, 0xff, 0x33, 0xc7, 0xd1, 0x5a, 0x6e, 0xe6,
+	0x8f, 0x7f, 0xd6, 0xa0, 0xb9, 0xc0, 0xce, 0xe4, 0x1c, 0xda, 0xaf, 0x39, 0xdb, 0x4a, 0x8f, 0x33,
+	0x49, 0xb2, 0x51, 0x72, 0x9d, 0x3a, 0xdd, 0x34, 0x96, 0x32, 0x40, 0x2b, 0xe4, 0x29, 0x1c, 0xcf,
+	0xb8, 0x9c, 0x04, 0x41, 0x3a, 0xd6, 0x71, 0x7a, 0x09, 0xbf, 0x33, 0xa7, 0x57, 0x32, 0x17, 0xad,
+	0x90, 0x05, 0x9c, 0xcc, 0xb8, 0x3c, 0x78, 0xfb, 0x1e, 0xee, 0xa5, 0xee, 0x1f, 0x3a, 0x0f, 0xfe,
+	0x28, 0x48, 0x5a, 0x21, 0x4b, 0x20, 0x33, 0x2e, 0x0f, 0xdf, 0xb9, 0xd3, 0xbd, 0x7a, 0x07, 0xa7,
+	0x8e, 0x53, 0x2c, 0xb8, 0xbf, 0x59, 0x5a, 0x21, 0x2f, 0xa1, 0x7b, 0x99, 0x6c, 0x98, 0xe4, 0x6a,
+	0x72, 0xa3, 0xc3, 0xfb, 0x25, 0xf5, 0xd4, 0x22, 0x4a, 0x89, 0x79, 0x05, 0x77, 0xe7, 0x91, 0x90,
+	0x2c, 0x32, 0xb5, 0x33, 0x54, 0xbd, 0x92, 0x2a, 0xa5, 0x15, 0x26, 0x70, 0x2f, 0xd5, 0xf8, 0x3f,
+	0x96, 0xf0, 0x9a, 0xf8, 0xe7, 0x73, 0xfe, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x7e, 0x3d, 0x8e, 0xee,
+	0x8c, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -640,6 +766,7 @@ type MasterClient interface {
 	GetAllMinions(ctx context.Context, in *Query, opts ...grpc.CallOption) (*ListMinions, error)
 	GetTablesByMinion(ctx context.Context, in *QueryTablesByMinion, opts ...grpc.CallOption) (*ListTableResponse, error)
 	GetBackupsByMinion(ctx context.Context, in *QueryBackupsByMinion, opts ...grpc.CallOption) (*ListBackupResponse, error)
+	UpdateInfoBackup(ctx context.Context, in *QueryBackupUnit, opts ...grpc.CallOption) (*Response, error)
 	InstantBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error)
 	ScheduleBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error)
 }
@@ -688,6 +815,15 @@ func (c *masterClient) GetBackupsByMinion(ctx context.Context, in *QueryBackupsB
 	return out, nil
 }
 
+func (c *masterClient) UpdateInfoBackup(ctx context.Context, in *QueryBackupUnit, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/master.Master/UpdateInfoBackup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *masterClient) InstantBackupByMinion(ctx context.Context, in *QueryBackup, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/master.Master/InstantBackupByMinion", in, out, opts...)
@@ -712,6 +848,7 @@ type MasterServer interface {
 	GetAllMinions(context.Context, *Query) (*ListMinions, error)
 	GetTablesByMinion(context.Context, *QueryTablesByMinion) (*ListTableResponse, error)
 	GetBackupsByMinion(context.Context, *QueryBackupsByMinion) (*ListBackupResponse, error)
+	UpdateInfoBackup(context.Context, *QueryBackupUnit) (*Response, error)
 	InstantBackupByMinion(context.Context, *QueryBackup) (*Response, error)
 	ScheduleBackupByMinion(context.Context, *QueryBackup) (*Response, error)
 }
@@ -792,6 +929,24 @@ func _Master_GetBackupsByMinion_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Master_UpdateInfoBackup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBackupUnit)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MasterServer).UpdateInfoBackup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/master.Master/UpdateInfoBackup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MasterServer).UpdateInfoBackup(ctx, req.(*QueryBackupUnit))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Master_InstantBackupByMinion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryBackup)
 	if err := dec(in); err != nil {
@@ -847,6 +1002,10 @@ var _Master_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetBackupsByMinion",
 			Handler:    _Master_GetBackupsByMinion_Handler,
+		},
+		{
+			MethodName: "UpdateInfoBackup",
+			Handler:    _Master_UpdateInfoBackup_Handler,
 		},
 		{
 			MethodName: "InstantBackupByMinion",
