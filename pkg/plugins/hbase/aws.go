@@ -58,7 +58,7 @@ func uploadSnapshotToS3(snapshotname *string, options *globals.S3Options) bool {
 	var t = time.Now()
 
 	key := filepath.Join(options.BucketName, options.Key, t.Format("2006-01-02"), *snapshotname)
-	log.Info.Printf("Start uploading %s to S3 %s\n", *snapshotname, key)
+	log.Info.Printf("upload %s to S3 %s\n", *snapshotname, key)
 	_, err := exec.Command(
 		"hbase",
 		"org.apache.hadoop.hbase.snapshot.ExportSnapshot",
@@ -69,7 +69,7 @@ func uploadSnapshotToS3(snapshotname *string, options *globals.S3Options) bool {
 		return false
 	}
 
-	log.Info.Printf("Finish uploading %s to S3 %s\n", *snapshotname, key)
+	log.Info.Printf("done: upload %s to S3 %s\n", *snapshotname, key)
 	return true
 }
 

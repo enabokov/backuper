@@ -47,7 +47,7 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 	}
 	tmpFilename := writeAndGetTmpFile(cmds)
 
-	log.Info.Println("Creating table from snapshot", snapshotname)
+	log.Info.Println("create table from snapshot", snapshotname)
 	_, err := exec.Command(
 		"hbase",
 		"shell",
@@ -57,6 +57,8 @@ func createTableFromSnapshot(snapshotname string) (string, error) {
 		log.Error.Println(err)
 		return "", err
 	}
+
+	log.Info.Println("done: create table from snapshot", snapshotname)
 	return snapshotname + "_table", nil
 }
 
@@ -64,7 +66,7 @@ func getTables(socket globals.Socket) (tables []string) {
 	cmds := []string{`list`}
 	tmpFilename := writeAndGetTmpFile(cmds)
 
-	log.Info.Println("Getting list of tables from hbase")
+	log.Info.Println("get list tables' names from hbase")
 	out, err := exec.Command(
 		"hbase",
 		"shell",
@@ -96,7 +98,7 @@ func getTables(socket globals.Socket) (tables []string) {
 
 		tables = append(tables, line)
 	}
-
+	log.Info.Println("done: get list tables' names from hbase")
 	return tables
 }
 

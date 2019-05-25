@@ -68,7 +68,6 @@ func findLastBackup(minionIP string, minionPort int, db, namespace, tablename st
 	for _, backup := range backups {
 		if strings.Compare(namespace, backup.Namespace) == 0 &&
 			strings.Compare(tablename, backup.Table) == 0 {
-			log.Info.Println("DEBUG", namespace, tablename, latestTimeStamp)
 			latestTimeStamp = backup.Timestamp
 		}
 	}

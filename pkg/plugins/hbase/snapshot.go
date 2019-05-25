@@ -33,7 +33,6 @@ func createSnapshotFromTable(namespace, tablename *string) string {
 		fmt.Sprintf("--table %s", *tablename),
 		fmt.Sprintf("--name %s", snapshotName)).Output()
 	if err != nil {
-		log.Error.Printf("failed to create snapshot %s from %s\n", snapshotName, *tablename)
 		return ""
 	}
 
@@ -48,7 +47,7 @@ func deleteSnapshot(snapshotname *string) {
 
 	tmpFilename := writeAndGetTmpFile(cmds)
 
-	log.Info.Println("Start: delete snapshot", *snapshotname)
+	log.Info.Printf("delete snapshot %s\n", *snapshotname)
 	_, err := exec.Command(
 		"hbase",
 		"shell",
@@ -58,5 +57,5 @@ func deleteSnapshot(snapshotname *string) {
 		log.Error.Printf("failed to delete snapshot %s: %v\n", *snapshotname, err)
 	}
 
-	log.Info.Println("Done: delete snapshot", *snapshotname)
+	log.Info.Printf("done: delete snapshot %s\n", *snapshotname)
 }
