@@ -10,16 +10,20 @@
     </tr>
     </thead>
     <tbody>
-    {{ range $ip, $port := .Minions }}
+    {{ range .Minions }}
         <tr>
-            <td>{{ $ip }}</td>
-            <td>{{ $port }}</td>
+            <td>{{ .IP }}</td>
+            <td>{{ .Port }}</td>
             <td>
-                <a href="/progress?db=hbase&&host={{ $ip }}&&port={{ $port }}" class="badge badge-pill badge-primary">HBase</a>
-                <a href="/progress?db=postgres&&host={{ $ip }}&&port={{ $port }}" class="badge badge-pill badge-dark">Postgres</a>
+                <a href="/progress?db=hbase&&host={{ .IP }}&&port={{ .Port }}" class="badge badge-pill badge-primary">HBase</a>
+                <a href="/progress?db=postgres&&host={{ .IP }}&&port={{ .Port }}" class="badge badge-pill badge-dark disabled">Postgres</a>
             </td>
             <td>
-                <span class="badge badge-pill badge-success">Active</span>
+                {{ if .IsActive }}
+                    <span class="badge badge-pill badge-success">Active</span>
+                {{ else }}
+                    <span class="badge badge-pill badge-danger">Not active</span>
+                {{ end }}
             </td>
         </tr>
     {{ end }}

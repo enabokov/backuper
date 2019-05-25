@@ -16,26 +16,31 @@
             <tr>
                 <td>{{ index $table `namespace` }}:{{ index $table `tablename`}}</td>
                 <td>
-                    <a href="/start?db=hbase&&host={{ $.Host }}&&port={{ $.Port }}&&namespace={{ index $table `namespace` }}&&table={{ index $table `tablename`}}" class="btn btn-outline-success my-2 my-sm-0">instant backup</a>
+                    <div class="btn-toolbar" role="toolbar" aria-label="action groups">
+                        <div class="btn-group mr-2" role="group" aria-label="instant group">
+                            <a href="/start?db=hbase&&host={{ $.Host }}&&port={{ $.Port }}&&namespace={{ index $table `namespace` }}&&table={{ index $table `tablename`}}" class="btn btn-outline-success my-2 my-sm-0">instant backup</a>
+                        </div>
+                        <div class="btn-group mr-2" role="group" aria-label="schedule group">
+                            <form class="form-inline" action="/schedule?db=hbase&&host={{ $.Host }}&&port={{ $.Port }}&&namespace={{ index $table `namespace` }}&&table={{ index $table `tablename`}}" method="POST">
+                                <input type="submit" value="schedule" class="btn btn-outline-danger my-2 my-sm-0"/>
+                                <input class="form-control" type="time" value="22:00:00" name="schedule-time">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="schedule-daily"> Daily
+                                </label>
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="schedule-weekly" disabled> Weekly
+                                </label>
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="schedule-monthly" disabled> Monthly
+                                </label>
+                            </form>
+                        </div>
+                    </div>
                 </td>
-                <td>
-                    <form class="form-inline" action="/schedule?db=hbase&&host={{ $.Host }}&&port={{ $.Port }}&&namespace={{ index $table `namespace` }}&&table={{ index $table `tablename`}}" method="POST">
-                        <input type="submit" value="Schedule" class="btn btn-outline-danger my-2 my-sm-0"/>
-                        <input class="form-control" type="time" value="22:00:00" name="schedule-time">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="schedule-daily"> Daily
-                        </label>
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="schedule-weekly" disabled> Weekly
-                        </label>
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="schedule-monthly" disabled> Monthly
-                        </label>
-                    </form>
-                </td>
+                <td>{{ index $table `scheduledAt` }}</td>
                 <td>{{ index $table `lastbackup` }}</td>
             </tr>
         {{ end }}
         </tbody>
     </table>
-{{end}}
+{{ end }}
