@@ -49,7 +49,7 @@ func deleteSnapshot(snapshotname *string) {
 	tmpFilename := writeAndGetTmpFile(cmds)
 
 	log.Info.Println("Start: delete snapshot", *snapshotname)
-	out, err := exec.Command(
+	_, err := exec.Command(
 		"hbase",
 		"shell",
 		tmpFilename,
